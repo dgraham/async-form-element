@@ -17,22 +17,33 @@
     });
   }
 
+  function nextTick(fn) {
+    Promise.resolve().then(fn);
+  }
+
   function captureAsyncFormSubmit(event) {
     if (AsyncFormElementPrototype.isPrototypeOf(event.target)) {
+      event.dispatched = makeDeferred();
+      nextTick(function() {
+        event.dispatched.reject();
+      });
+
       event.submission = makeDeferred();
-      event.waitUntil = function() {};
 
       window.removeEventListener('submit', handleAsyncFormSubmit, false);
       window.addEventListener('submit', handleAsyncFormSubmit, false);
+
+      event.dispatched.then(function() {
+        return event.target.request();
+      }).then(event.submission.resolve, event.submission.reject);
     }
   }
 
   function handleAsyncFormSubmit(event) {
-    if (!event.defaultPrevented) {
-      event.target.request().then(
-        event.submission.resolve,
-        event.submission.reject
-      );
+    if (event.defaultPrevented) {
+      event.dispatched.reject();
+    } else {
+      event.dispatched.resolve();
     }
 
     // Always disable default form submit
