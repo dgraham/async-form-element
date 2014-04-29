@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+</head>
+<body>
+  <script src="../bower_components/es5-basic-shim/src/shim.js"></script>
+  <script src="../bower_components/es6-promise/promise.js"></script>
+  <script src="../bower_components/WeakMap/WeakMap.js"></script>
+  <script src="../bower_components/MutationObserver/MutationObserver.js"></script>
+  <script src="../bower_components/CustomElements/custom-elements.js"></script>
+
+  <script src="../async-form-element.js"></script>
+
+  <script id="request-json">
+    var request = <%= JSON %>;
+  </script>
+
+  <form id="form">
+  </form>
+
+  <script>
+    function handleAsyncSubmit(event) {
+      event.submission.then(function(html) {
+        document.body.innerHTML = html;
+        window.eval(document.getElementById('request-json').textContent);
+        window.frameElement.resolve(window);
+      }, function(error) {
+        window.frameElement.reject(error);
+      })
+    }
+  </script>
+  <form is="async-form" id="async-form" onsubmit="handleAsyncSubmit(event)">
+  </form>
+
+  <script>
+    if (window.frameElement) {
+      window.frameElement.resolve(window);
+    }
+  </script>
+</body>
+</html>

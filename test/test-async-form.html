@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Test Suite</title>
+  <link rel="stylesheet" href="../bower_components/qunit/qunit/qunit.css">
+</head>
+<body>
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
+
+  <script src="../bower_components/qunit/qunit/qunit.js"></script>
+  <script src="../bower_components/es6-promise/promise.js"></script>
+
+  <script>
+    function makeDeferred() {
+      var resolve, reject;
+      var promise = new Promise(function(_resolve, _reject) {
+        resolve = _resolve;
+        reject = _reject;
+      });
+      return Object.create(promise, {
+        resolve: { value: resolve },
+        reject: { value: reject }
+      });
+    }
+
+    QUnit.createFrame = function() {
+      var iframe = document.createElement('iframe');
+
+      iframe.nextReady = function() {
+        var deferred = makeDeferred();
+        iframe.resolve = deferred.resolve;
+        iframe.reject  = deferred.reject;
+        return deferred;
+      };
+
+      var fixture = document.getElementById('qunit-fixture');
+      fixture.appendChild(iframe);
+      return iframe;
+    };
+
+    var formId = "async-form";
+  </script>
+  <script src="./test.js"></script>
+</body>
+</html>
