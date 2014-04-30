@@ -1,5 +1,5 @@
 var formId = window.formId;
-var begin = window.Promise.resolve();
+var begin = Promise.resolve();
 
 asyncTest('form GET request', 4, function() {
   var frame = QUnit.createFrame();

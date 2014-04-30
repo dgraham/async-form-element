@@ -1,8 +1,6 @@
 (function() {
   'use strict';
 
-  var Promise = window.Promise;
-
   var AsyncFormElementPrototype = Object.create(HTMLFormElement.prototype);
 
   function makeDeferred() {

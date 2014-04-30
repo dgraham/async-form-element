@@ -14,5 +14,6 @@
   "trailing": true,
   "boss": true,
   "eqnull": true,
+  "esnext": true,
   "browser": true
 }
