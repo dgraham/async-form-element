@@ -1,54 +1,55 @@
 var formId = window.formId;
+var begin = window.Promise.resolve();
 
-asyncTest('form GET request', 3, function() {
+asyncTest('form GET request', 4, function() {
   var frame = QUnit.createFrame();
 
-  frame.nextReady().then(function(window) {
-    frame.nextReady().then(function(window) {
-      equal(window.request.method, 'GET');
-      equal(window.request.url.replace('?', ''), '/foo');
-      equal(window.request.body, '');
-      start();
-    });
-
+  begin.then(function() {
+    frame.src = '/form';
+    return frame.nextReady();
+  }).then(function(window) {
     var form = window.document.getElementById(formId);
     form.method = 'GET';
     form.action = '/foo';
+
     form.submit();
-  });
-  frame.src = '/form';
+    return frame.nextReady();
+  }).then(function(window) {
+    equal(window.request.method, 'GET');
+    equal(window.request.url.replace('?', ''), '/foo');
+    equal(window.request.body, '');
+    equal(window.request.headers['content-type'], null);
+  }).then(start);
 });
 
-asyncTest('form POST request', 3, function() {
+asyncTest('form POST request', 4, function() {
   var frame = QUnit.createFrame();
 
-  frame.nextReady().then(function(window) {
-    frame.nextReady().then(function(window) {
-      equal(window.request.method, 'POST');
-      equal(window.request.url, '/foo');
-      equal(window.request.body, '');
-      start();
-    });
-
+  begin.then(function() {
+    frame.src = '/form';
+    return frame.nextReady();
+  }).then(function(window) {
     var form = window.document.getElementById('form');
     form.method = 'POST';
     form.action = '/foo';
+
     form.submit();
-  });
-  frame.src = '/form';
+    return frame.nextReady();
+  }).then(function(window) {
+    equal(window.request.method, 'POST');
+    equal(window.request.url, '/foo');
+    equal(window.request.body, '');
+    equal(window.request.headers['content-type'], 'application/x-www-form-urlencoded');
+  }).then(start);
 });
 
 asyncTest('form GET request with field', 3, function() {
   var frame = QUnit.createFrame();
 
-  frame.nextReady().then(function(window) {
-    frame.nextReady().then(function(window) {
-      equal(window.request.method, 'GET');
-      equal(window.request.url, '/foo?bar=baz');
-      equal(window.request.body, '');
-      start();
-    });
-
+  begin.then(function() {
+    frame.src = '/form';
+    return frame.nextReady();
+  }).then(function(window) {
     var form = window.document.getElementById('form');
     form.method = 'GET';
     form.action = '/foo';
@@ -60,21 +61,21 @@ asyncTest('form GET request with field', 3, function() {
     form.appendChild(input);
 
     form.submit();
-  });
-  frame.src = '/form';
+    return frame.nextReady();
+  }).then(function(window) {
+    equal(window.request.method, 'GET');
+    equal(window.request.url, '/foo?bar=baz');
+    equal(window.request.body, '');
+  }).then(start);
 });
 
 asyncTest('form POST request with field', 3, function() {
   var frame = QUnit.createFrame();
 
-  frame.nextReady().then(function(window) {
-    frame.nextReady().then(function(window) {
-      equal(window.request.method, 'POST');
-      equal(window.request.url, '/foo');
-      equal(window.request.body, 'bar=baz');
-      start();
-    });
-
+  begin.then(function() {
+    frame.src = '/form';
+    return frame.nextReady();
+  }).then(function(window) {
     var form = window.document.getElementById('form');
     form.method = 'POST';
     form.action = '/foo';
@@ -86,6 +87,74 @@ asyncTest('form POST request with field', 3, function() {
     form.appendChild(input);
 
     form.submit();
-  });
-  frame.src = '/form';
+    return frame.nextReady();
+  }).then(function(window) {
+    equal(window.request.method, 'POST');
+    equal(window.request.url, '/foo');
+    equal(window.request.body, 'bar=baz');
+  }).then(start);
+});
+
+asyncTest('form GET request with fields', 3, function() {
+  var frame = QUnit.createFrame();
+
+  begin.then(function() {
+    frame.src = '/form';
+    return frame.nextReady();
+  }).then(function(window) {
+    var form = window.document.getElementById('form');
+    form.method = 'GET';
+    form.action = '/foo';
+
+    var input = window.document.createElement('input');
+    input.type = 'hidden';
+    input.name = 'foo';
+    input.value = '1';
+    form.appendChild(input);
+
+    input = window.document.createElement('input');
+    input.type = 'hidden';
+    input.name = 'bar';
+    input.value = '2';
+    form.appendChild(input);
+
+    form.submit();
+    return frame.nextReady();
+  }).then(function(window) {
+    equal(window.request.method, 'GET');
+    equal(window.request.url, '/foo?foo=1&bar=2');
+    equal(window.request.body, '');
+  }).then(start);
+});
+
+asyncTest('form POST request with fields', 3, function() {
+  var frame = QUnit.createFrame();
+
+  begin.then(function() {
+    frame.src = '/form';
+    return frame.nextReady();
+  }).then(function(window) {
+    var form = window.document.getElementById('form');
+    form.method = 'POST';
+    form.action = '/foo';
+
+    var input = window.document.createElement('input');
+    input.type = 'hidden';
+    input.name = 'foo';
+    input.value = '1';
+    form.appendChild(input);
+
+    input = window.document.createElement('input');
+    input.type = 'hidden';
+    input.name = 'bar';
+    input.value = '2';
+    form.appendChild(input);
+
+    form.submit();
+    return frame.nextReady();
+  }).then(function(window) {
+    equal(window.request.method, 'POST');
+    equal(window.request.url, '/foo');
+    equal(window.request.body, 'foo=1&bar=2');
+  }).then(start);
 });
