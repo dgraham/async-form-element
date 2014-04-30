@@ -9,7 +9,7 @@ server.on('listening', function() {
   var port = server.address().port;
   var host = 'localhost:' + port;
 
-  var process = phantomjs('http://'+host+'/test/test-form.html');
+  var process = phantomjs('http://'+host+'/test/test.html');
   process.on('exit', function() {
     server.close();
   });
