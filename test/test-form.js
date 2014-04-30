@@ -22,7 +22,7 @@ asyncTest('form POST request', 4, function() {
   var ready = QUnit.createFrame();
 
   ready().then(function(window) {
-    var form = window.document.getElementById('form');
+    var form = window.document.getElementById(formId);
     form.method = 'POST';
     form.action = '/foo';
 
@@ -40,7 +40,7 @@ asyncTest('form GET request with field', 3, function() {
   var ready = QUnit.createFrame();
 
   ready().then(function(window) {
-    var form = window.document.getElementById('form');
+    var form = window.document.getElementById(formId);
     form.method = 'GET';
     form.action = '/foo';
 
@@ -63,7 +63,7 @@ asyncTest('form POST request with field', 3, function() {
   var ready = QUnit.createFrame();
 
   ready().then(function(window) {
-    var form = window.document.getElementById('form');
+    var form = window.document.getElementById(formId);
     form.method = 'POST';
     form.action = '/foo';
 
@@ -86,7 +86,7 @@ asyncTest('form GET request with fields', 3, function() {
   var ready = QUnit.createFrame();
 
   ready().then(function(window) {
-    var form = window.document.getElementById('form');
+    var form = window.document.getElementById(formId);
     form.method = 'GET';
     form.action = '/foo';
 
@@ -115,7 +115,7 @@ asyncTest('form POST request with fields', 3, function() {
   var ready = QUnit.createFrame();
 
   ready().then(function(window) {
-    var form = window.document.getElementById('form');
+    var form = window.document.getElementById(formId);
     form.method = 'POST';
     form.action = '/foo';
 
