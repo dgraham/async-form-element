@@ -1,6 +1,5 @@
 test: node_modules/ bower_components/ lint
-	node ./node_modules/.bin/node-qunit-phantomjs http://localhost:3000/test/test-form.html
-	node ./node_modules/.bin/node-qunit-phantomjs http://localhost:3000/test/test-async-form.html
+	node ./test/run.js
 
 lint: node_modules/
 	./node_modules/.bin/jshint *.js test/*.js
