@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 var http = require('http');
-var app = require('./server');
+var app = require('./app');
 var phantomjs = require('node-qunit-phantomjs');
 
 var server = http.createServer(app);
