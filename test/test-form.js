@@ -1,19 +1,15 @@
 var formId = window.formId;
-var begin = Promise.resolve();
 
 asyncTest('form GET request', 4, function() {
-  var frame = QUnit.createFrame();
+  var ready = QUnit.createFrame();
 
-  begin.then(function() {
-    frame.src = '/form';
-    return frame.nextReady();
-  }).then(function(window) {
+  ready().then(function(window) {
     var form = window.document.getElementById(formId);
     form.method = 'GET';
     form.action = '/foo';
 
     form.submit();
-    return frame.nextReady();
+    return ready();
   }).then(function(window) {
     equal(window.request.method, 'GET');
     equal(window.request.url.replace('?', ''), '/foo');
@@ -23,18 +19,15 @@ asyncTest('form GET request', 4, function() {
 });
 
 asyncTest('form POST request', 4, function() {
-  var frame = QUnit.createFrame();
+  var ready = QUnit.createFrame();
 
-  begin.then(function() {
-    frame.src = '/form';
-    return frame.nextReady();
-  }).then(function(window) {
+  ready().then(function(window) {
     var form = window.document.getElementById('form');
     form.method = 'POST';
     form.action = '/foo';
 
     form.submit();
-    return frame.nextReady();
+    return ready();
   }).then(function(window) {
     equal(window.request.method, 'POST');
     equal(window.request.url, '/foo');
@@ -44,12 +37,9 @@ asyncTest('form POST request', 4, function() {
 });
 
 asyncTest('form GET request with field', 3, function() {
-  var frame = QUnit.createFrame();
+  var ready = QUnit.createFrame();
 
-  begin.then(function() {
-    frame.src = '/form';
-    return frame.nextReady();
-  }).then(function(window) {
+  ready().then(function(window) {
     var form = window.document.getElementById('form');
     form.method = 'GET';
     form.action = '/foo';
@@ -61,7 +51,7 @@ asyncTest('form GET request with field', 3, function() {
     form.appendChild(input);
 
     form.submit();
-    return frame.nextReady();
+    return ready();
   }).then(function(window) {
     equal(window.request.method, 'GET');
     equal(window.request.url, '/foo?bar=baz');
@@ -70,12 +60,9 @@ asyncTest('form GET request with field', 3, function() {
 });
 
 asyncTest('form POST request with field', 3, function() {
-  var frame = QUnit.createFrame();
+  var ready = QUnit.createFrame();
 
-  begin.then(function() {
-    frame.src = '/form';
-    return frame.nextReady();
-  }).then(function(window) {
+  ready().then(function(window) {
     var form = window.document.getElementById('form');
     form.method = 'POST';
     form.action = '/foo';
@@ -87,7 +74,7 @@ asyncTest('form POST request with field', 3, function() {
     form.appendChild(input);
 
     form.submit();
-    return frame.nextReady();
+    return ready();
   }).then(function(window) {
     equal(window.request.method, 'POST');
     equal(window.request.url, '/foo');
@@ -96,12 +83,9 @@ asyncTest('form POST request with field', 3, function() {
 });
 
 asyncTest('form GET request with fields', 3, function() {
-  var frame = QUnit.createFrame();
+  var ready = QUnit.createFrame();
 
-  begin.then(function() {
-    frame.src = '/form';
-    return frame.nextReady();
-  }).then(function(window) {
+  ready().then(function(window) {
     var form = window.document.getElementById('form');
     form.method = 'GET';
     form.action = '/foo';
@@ -119,7 +103,7 @@ asyncTest('form GET request with fields', 3, function() {
     form.appendChild(input);
 
     form.submit();
-    return frame.nextReady();
+    return ready();
   }).then(function(window) {
     equal(window.request.method, 'GET');
     equal(window.request.url, '/foo?foo=1&bar=2');
@@ -128,12 +112,9 @@ asyncTest('form GET request with fields', 3, function() {
 });
 
 asyncTest('form POST request with fields', 3, function() {
-  var frame = QUnit.createFrame();
+  var ready = QUnit.createFrame();
 
-  begin.then(function() {
-    frame.src = '/form';
-    return frame.nextReady();
-  }).then(function(window) {
+  ready().then(function(window) {
     var form = window.document.getElementById('form');
     form.method = 'POST';
     form.action = '/foo';
@@ -151,7 +132,7 @@ asyncTest('form POST request with fields', 3, function() {
     form.appendChild(input);
 
     form.submit();
-    return frame.nextReady();
+    return ready();
   }).then(function(window) {
     equal(window.request.method, 'POST');
     equal(window.request.url, '/foo');

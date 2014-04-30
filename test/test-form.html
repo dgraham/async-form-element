@@ -13,20 +13,9 @@
   <script src="../bower_components/es6-promise/promise.js"></script>
 
   <script>
-    QUnit.createFrame = function() {
-      var iframe = document.createElement('iframe');
-      iframe.nextReady = function() {
-        return new Promise(function(resolve) {
-          iframe.resolve = resolve;
-        });
-      };
-      var fixture = document.getElementById('qunit-fixture');
-      fixture.appendChild(iframe);
-      return iframe;
-    };
-
     var formId = "form";
   </script>
+  <script src="./iframe.js"></script>
   <script src="./test-form.js"></script>
 </body>
 </html>
