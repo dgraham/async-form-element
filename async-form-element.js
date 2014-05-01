@@ -70,8 +70,11 @@
 
       var method = form.method.toUpperCase();
       var url = form.action;
-
       req.open(method, url);
+
+      if (method !== 'GET') {
+        req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+      }
 
       req.onload = function() {
         if (req.status === 200) {
