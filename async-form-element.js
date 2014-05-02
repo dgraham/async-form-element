@@ -55,10 +55,8 @@
   };
 
   AsyncFormElementPrototype.submit = function() {
-    var event = new window.Event('submit', {
-      bubbles: true,
-      cancelable: true
-    });
+    var event = document.createEvent('Event');
+    event.initEvent('submit', true, true);
     this.dispatchEvent(event);
     return event.submission;
   };
