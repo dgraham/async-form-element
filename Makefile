@@ -1,4 +1,6 @@
-test: node_modules/ bower_components/ lint
+build: node_modules/ bower_components/
+
+test: build lint
 	node ./test/run.js
 
 lint: node_modules/
@@ -13,4 +15,4 @@ node_modules/:
 clean:
 	rm -rf ./bower_components ./node_modules
 
-.PHONY: lint test clean
+.PHONY: build test lint clean
