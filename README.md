@@ -1,5 +1,6 @@
 # &lt;form is="async-form"&gt;
 
+Progressively enhances a form element to submit via XHR.
 
 ## Installation
 
