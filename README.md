@@ -13,6 +13,9 @@ $ bower install async-form-element --save
 ```html
 <!-- Include a Web Components polyfill -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/polymer/0.2.3/platform.js"></script>
+<!-- Include a ES6 Promise polyfill -->
+<script src="http://s3.amazonaws.com/es6-promises/promise-1.0.0.min.js"></script>
+
 <script src="async-form-element.js"></script>
 ```
 
