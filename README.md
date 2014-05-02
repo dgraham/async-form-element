@@ -29,6 +29,20 @@ Any async form behaves just like a regular form element, except when submitted, 
 </form>
 ```
 
+``` javascript
+form.addEventListener('submit', function(event) {
+  // event.submission is a promise tracking the form submission progress.
+  event.submission.then(function() {
+    console.log('form submitted successfully');
+  });
+});
+
+// Explicit submit() invocations return the submission promise
+form.submit().then(function() {
+  console.log('form submitted successfully');
+});
+```
+
 ## See Also
 
 * Rails' [`<form data-remote>`](http://edgeguides.rubyonrails.org/working_with_javascript_in_rails.html#form-for)
