@@ -1,5 +1,5 @@
 {
-  "name": "async-form",
+  "name": "async-form-element",
   "version": "0.0.0",
   "main": "async-form-element.js",
   "devDependencies": {
