@@ -63,6 +63,26 @@
     return event.submission;
   };
 
+  AsyncFormElementPrototype.serializeArray = function() {
+    var params = [];
+    var i, els = this.elements;
+    for (i = 0; i < els.length; i++) {
+      params.push([els[i].name, els[i].value]);
+    }
+    return params;
+  };
+
+  AsyncFormElementPrototype.serialize = function() {
+    var urlencoded = [];
+    var i, params = this.serializeArray();
+    for (i = 0; i < params.length; i++) {
+      urlencoded.push(encodeURIComponent(params[i][0]) +
+        '=' +
+        encodeURIComponent(params[i][1]));
+    }
+    return urlencoded.join('&');
+  };
+
   AsyncFormElementPrototype.request = function() {
     var form = this;
     return new Promise(function(resolve, reject) {
@@ -70,10 +90,16 @@
 
       var method = form.method.toUpperCase();
       var url = form.action;
+      if (method === 'GET') {
+        url += '?' + form.serialize();
+      }
+      var body;
+
       req.open(method, url);
 
       if (method !== 'GET') {
         req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        body = form.serialize();
       }
 
       req.onload = function() {
@@ -88,7 +114,7 @@
         reject(new Error('Network Error'));
       };
 
-      req.send();
+      req.send(body);
     });
   };
 
