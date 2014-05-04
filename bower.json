@@ -2,6 +2,9 @@
   "name": "async-form-element",
   "version": "0.1.0",
   "main": "async-form-element.js",
+  "keywords": [
+    "web-components"
+  ],
   "devDependencies": {
     "CustomElements": "0.2.1",
     "es5-basic-shim": "1.0.6",
