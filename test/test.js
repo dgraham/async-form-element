@@ -141,3 +141,23 @@
     });
   });
 });
+
+promiseTest('form POST request with async-accept', 5, function() {
+  var ready = QUnit.createFrame();
+
+  return ready().then(function(window) {
+    var form = window.document.getElementById('async-form');
+    form.method = 'POST';
+    form.action = '/foo';
+    form.asyncAccept = 'application/json';
+
+    form.submit();
+    return ready();
+  }).then(function(window) {
+    equal(window.request.method, 'POST');
+    equal(window.request.url, '/foo');
+    equal(window.request.body, '');
+    equal(window.request.headers['content-type'], 'application/x-www-form-urlencoded');
+    equal(window.request.headers['accept'], 'application/json');
+  })
+});

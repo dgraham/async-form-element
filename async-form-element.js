@@ -3,6 +3,15 @@
 
   var AsyncFormElementPrototype = Object.create(HTMLFormElement.prototype);
 
+  Object.defineProperty(AsyncFormElementPrototype, 'asyncAccept', {
+    get: function() {
+      return this.getAttribute('async-accept') || '*/*';
+    },
+    set: function(value) {
+      this.setAttribute('async-accept', value);
+    }
+  });
+
   function makeDeferred() {
     var resolve, reject;
     var promise = new Promise(function(_resolve, _reject) {
@@ -94,6 +103,7 @@
       var body;
 
       req.open(method, url);
+      req.setRequestHeader('Accept', form.asyncAccept);
 
       if (method !== 'GET') {
         req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
