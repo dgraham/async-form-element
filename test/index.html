@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+</head>
+<body>
+  <script src="../bower_components/es5-basic-shim/src/shim.js"></script>
+  <script src="../bower_components/es6-promise/promise.js"></script>
+  <script src="../bower_components/WeakMap/WeakMap.js"></script>
+  <script src="../bower_components/MutationObserver/MutationObserver.js"></script>
+  <script src="../bower_components/CustomElements/custom-elements.js"></script>
+
+  <script src="../async-form-element.js"></script>
+
+  <h2>Form</h2>
+  <form method="post">
+    <input type="text" name="name">
+    <input type="submit">
+  </form>
+
+  <h2>Async Form</h2>
+  <script>
+    function handleAsyncSubmit(event) {
+      event.submission.then(function(result) {
+        console.log(result);
+      }, function(error) {
+        setTimeout(function() {
+          throw error;
+        }, 0);
+      })
+    }
+  </script>
+  <form is="async-form" method="post" onsubmit="handleAsyncSubmit(event)">
+    <input type="text" name="name">
+    <input type="submit">
+  </form>
+</body>
+</html>
