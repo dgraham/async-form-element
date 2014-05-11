@@ -118,11 +118,17 @@
       option.value = 'c';
       select.appendChild(option);
 
+      var textarea;
+      textarea = window.document.createElement('textarea');
+      textarea.name = 'text'
+      textarea.value = 'foo';
+      form.appendChild(textarea);
+
       form.submit();
       return ready();
     }).then(function(window) {
       equal(window.request.method, 'GET');
-      equal(window.request.url, '/foo?foo=1&bar=2&select=a');
+      equal(window.request.url, '/foo?foo=1&bar=2&select=a&text=foo');
       equal(window.request.body, '');
     });
   });
@@ -162,12 +168,18 @@
       option.value = 'c';
       select.appendChild(option);
 
+      var textarea;
+      textarea = window.document.createElement('textarea');
+      textarea.name = 'text'
+      textarea.value = 'foo';
+      form.appendChild(textarea);
+
       form.submit();
       return ready();
     }).then(function(window) {
       equal(window.request.method, 'POST');
       equal(window.request.url, '/foo');
-      equal(window.request.body, 'foo=1&bar=2&select=a');
+      equal(window.request.body, 'foo=1&bar=2&select=a&text=foo');
     });
   });
 });
