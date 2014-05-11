@@ -98,16 +98,31 @@
       form.appendChild(input);
 
       input = window.document.createElement('input');
-      input.type = 'hidden';
+      input.type = 'text';
       input.name = 'bar';
       input.value = '2';
       form.appendChild(input);
+
+      var select, option;
+      select = window.document.createElement('select');
+      select.name = 'select';
+      form.appendChild(select);
+      option = window.document.createElement('option');
+      option.value = 'a';
+      option.selected = true;
+      select.appendChild(option);
+      option = window.document.createElement('option');
+      option.value = 'b';
+      select.appendChild(option);
+      option = window.document.createElement('option');
+      option.value = 'c';
+      select.appendChild(option);
 
       form.submit();
       return ready();
     }).then(function(window) {
       equal(window.request.method, 'GET');
-      equal(window.request.url, '/foo?foo=1&bar=2');
+      equal(window.request.url, '/foo?foo=1&bar=2&select=a');
       equal(window.request.body, '');
     });
   });
@@ -127,17 +142,32 @@
       form.appendChild(input);
 
       input = window.document.createElement('input');
-      input.type = 'hidden';
+      input.type = 'text';
       input.name = 'bar';
       input.value = '2';
       form.appendChild(input);
+
+      var select, option;
+      select = window.document.createElement('select');
+      select.name = 'select';
+      form.appendChild(select);
+      option = window.document.createElement('option');
+      option.value = 'a';
+      option.selected = true;
+      select.appendChild(option);
+      option = window.document.createElement('option');
+      option.value = 'b';
+      select.appendChild(option);
+      option = window.document.createElement('option');
+      option.value = 'c';
+      select.appendChild(option);
 
       form.submit();
       return ready();
     }).then(function(window) {
       equal(window.request.method, 'POST');
       equal(window.request.url, '/foo');
-      equal(window.request.body, 'foo=1&bar=2');
+      equal(window.request.body, 'foo=1&bar=2&select=a');
     });
   });
 });
