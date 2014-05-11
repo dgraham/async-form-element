@@ -106,7 +106,7 @@
       req.setRequestHeader('Accept', form.asyncAccept);
 
       if (method !== 'GET') {
-        req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        req.setRequestHeader('Content-Type', form.enctype);
         body = form.serialize();
       }
 
