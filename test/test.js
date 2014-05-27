@@ -1,13 +1,17 @@
 ["form", "async-form"].forEach(function(formId) {
   module(formId);
 
-  promiseTest('form GET request', 4, function() {
+  promiseTest('form GET request', 5, function() {
     var ready = QUnit.createFrame();
 
     return ready().then(function(window) {
       var form = window.document.getElementById(formId);
+      window.CustomElements.upgrade(form);
+
       form.method = 'GET';
       form.action = '/foo';
+
+      equal(form.method, 'get');
 
       form.submit();
       return ready();
@@ -19,13 +23,17 @@
     });
   });
 
-  promiseTest('form POST request', 4, function() {
+  promiseTest('form POST request', 5, function() {
     var ready = QUnit.createFrame();
 
     return ready().then(function(window) {
       var form = window.document.getElementById(formId);
+      window.CustomElements.upgrade(form);
+
       form.method = 'POST';
       form.action = '/foo';
+
+      equal(form.method, 'post');
 
       form.submit();
       return ready();
@@ -37,11 +45,35 @@
     })
   });
 
+  promiseTest('form request with unknown method', 5, function() {
+    var ready = QUnit.createFrame();
+
+    return ready().then(function(window) {
+      var form = window.document.getElementById(formId);
+      window.CustomElements.upgrade(form);
+
+      form.method = 'UPDATE';
+      form.action = '/foo';
+
+      equal(form.method, 'get');
+
+      form.submit();
+      return ready();
+    }).then(function(window) {
+      equal(window.request.method, 'GET');
+      equal(window.request.url.replace('?', ''), '/foo');
+      equal(window.request.body, '');
+      equal(window.request.headers['content-type'], null);
+    });
+  });
+
   promiseTest('form GET request with field', 3, function() {
     var ready = QUnit.createFrame();
 
     return ready().then(function(window) {
       var form = window.document.getElementById(formId);
+      window.CustomElements.upgrade(form);
+
       form.method = 'GET';
       form.action = '/foo';
 
@@ -65,6 +97,8 @@
 
     return ready().then(function(window) {
       var form = window.document.getElementById(formId);
+      window.CustomElements.upgrade(form);
+
       form.method = 'POST';
       form.action = '/foo';
 
@@ -88,6 +122,8 @@
 
     return ready().then(function(window) {
       var form = window.document.getElementById(formId);
+      window.CustomElements.upgrade(form);
+
       form.method = 'GET';
       form.action = '/foo';
 
@@ -138,6 +174,8 @@
 
     return ready().then(function(window) {
       var form = window.document.getElementById(formId);
+      window.CustomElements.upgrade(form);
+
       form.method = 'POST';
       form.action = '/foo';
 
@@ -184,14 +222,62 @@
   });
 });
 
-promiseTest('form POST request with async-accept', 5, function() {
+promiseTest('form PUT request', 5, function() {
   var ready = QUnit.createFrame();
 
   return ready().then(function(window) {
     var form = window.document.getElementById('async-form');
+    window.CustomElements.upgrade(form);
+
+    form.method = 'PUT';
+    form.action = '/foo/1';
+
+    equal(form.asyncMethod, 'put');
+
+    form.submit();
+    return ready();
+  }).then(function(window) {
+    equal(window.request.method, 'PUT');
+    equal(window.request.url, '/foo/1');
+    equal(window.request.body, '');
+    equal(window.request.headers['content-type'], 'application/x-www-form-urlencoded');
+  })
+});
+
+promiseTest('form DELETE request', 5, function() {
+  var ready = QUnit.createFrame();
+
+  return ready().then(function(window) {
+    var form = window.document.getElementById('async-form');
+    window.CustomElements.upgrade(form);
+
+    form.method = 'DELETE';
+    form.action = '/foo/1';
+
+    equal(form.asyncMethod, 'delete');
+
+    form.submit();
+    return ready();
+  }).then(function(window) {
+    equal(window.request.method, 'DELETE');
+    equal(window.request.url, '/foo/1');
+    equal(window.request.body, '');
+    equal(window.request.headers['content-type'], 'application/x-www-form-urlencoded');
+  })
+});
+
+promiseTest('form POST request with async-accept', 6, function() {
+  var ready = QUnit.createFrame();
+
+  return ready().then(function(window) {
+    var form = window.document.getElementById('async-form');
+    window.CustomElements.upgrade(form);
+
     form.method = 'POST';
     form.action = '/foo';
     form.asyncAccept = 'application/json';
+
+    equal(form.asyncAccept, 'application/json');
 
     form.submit();
     return ready();

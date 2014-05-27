@@ -12,6 +12,26 @@
     }
   });
 
+  Object.defineProperty(AsyncFormElementPrototype, 'asyncMethod', {
+    get: function() {
+      var method = this.getAttribute('method');
+      if (method) {
+        method = method.toLowerCase();
+      }
+      switch (method) {
+        case 'get':
+        case 'post':
+        case 'put':
+        case 'delete':
+          return method;
+      }
+      return 'get';
+    },
+    set: function(value) {
+      this.setAttribute('method', value);
+    }
+  });
+
   function makeDeferred() {
     var resolve, reject;
     var promise = new Promise(function(_resolve, _reject) {
@@ -95,17 +115,17 @@
     return new Promise(function(resolve, reject) {
       var req = new XMLHttpRequest();
 
-      var method = form.method.toUpperCase();
+      var method = form.asyncMethod;
       var url = form.action;
-      if (method === 'GET') {
+      if (method === 'get') {
         url += '?' + form.serialize();
       }
       var body;
 
-      req.open(method, url);
+      req.open(method.toUpperCase(), url);
       req.setRequestHeader('Accept', form.asyncAccept);
 
-      if (method !== 'GET') {
+      if (method !== 'get') {
         req.setRequestHeader('Content-Type', form.enctype);
         body = form.serialize();
       }
