@@ -220,6 +220,35 @@
       equal(window.request.body, 'foo=1&bar=2&select=a&text=foo');
     });
   });
+
+  // promiseTest('form multipart POST request with field', 5, function() {
+  //   var ready = QUnit.createFrame();
+  //
+  //   return ready().then(function(window) {
+  //     var form = window.document.getElementById(formId);
+  //     window.CustomElements.upgrade(form);
+  //
+  //     form.method = 'POST';
+  //     form.action = '/foo';
+  //     form.enctype = 'multipart/form-data';
+  //
+  //     var input = window.document.createElement('input');
+  //     input.type = 'hidden';
+  //     input.name = 'bar';
+  //     input.value = 'baz';
+  //     form.appendChild(input);
+  //
+  //     form.submit();
+  //     return ready();
+  //   }).then(function(window) {
+  //     equal(window.request.method, 'POST');
+  //     equal(window.request.url, '/foo');
+  //     var lines = window.request.body.split(/\r\n?/);
+  //     equal(lines[1], 'Content-Disposition: form-data; name="bar"');
+  //     equal(lines[3], 'baz');
+  //     ok(window.request.headers['content-type'].match('multipart/form-data; boundary='));
+  //   });
+  // });
 });
 
 promiseTest('form PUT request', 5, function() {
