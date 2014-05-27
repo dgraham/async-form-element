@@ -99,6 +99,15 @@
     return params;
   };
 
+  AsyncFormElementPrototype.serializeFormData = function() {
+    var data = new FormData();
+    var i, params = this.serializeArray();
+    for (i = 0; i < params.length; i++) {
+      data.append(params[i][0], params[i][1]);
+    }
+    return data;
+  };
+
   AsyncFormElementPrototype.serialize = function() {
     var urlencoded = [];
     var i, params = this.serializeArray();
@@ -127,7 +136,12 @@
 
       if (method !== 'get') {
         req.setRequestHeader('Content-Type', form.enctype);
-        body = form.serialize();
+
+        if (form.enctype === 'multipart/form-data') {
+          body = form.serializeFormData();
+        } else {
+          body = form.serialize();
+        }
       }
 
       req.onload = function() {
