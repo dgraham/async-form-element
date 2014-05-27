@@ -266,6 +266,29 @@ promiseTest('form DELETE request', 5, function() {
   })
 });
 
+promiseTest('form POST request with default async-accept', 6, function() {
+  var ready = QUnit.createFrame();
+
+  return ready().then(function(window) {
+    var form = window.document.getElementById('async-form');
+    window.CustomElements.upgrade(form);
+
+    form.method = 'POST';
+    form.action = '/foo';
+
+    equal(form.asyncAccept, '*/*');
+
+    form.submit();
+    return ready();
+  }).then(function(window) {
+    equal(window.request.method, 'POST');
+    equal(window.request.url, '/foo');
+    equal(window.request.body, '');
+    equal(window.request.headers['content-type'], 'application/x-www-form-urlencoded');
+    equal(window.request.headers['accept'], '*/*');
+  })
+});
+
 promiseTest('form POST request with async-accept', 6, function() {
   var ready = QUnit.createFrame();
 
