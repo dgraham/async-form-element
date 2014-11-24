@@ -1,4 +1,4 @@
-["form", "async-form"].forEach(function(formId) {
+['form', 'async-form'].forEach(function(formId) {
   module(formId);
 
   promiseTest('form GET request', 5, function() {
