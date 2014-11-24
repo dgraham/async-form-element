@@ -314,7 +314,7 @@ promiseTest('form POST request with default async-accept', 6, function() {
     equal(window.request.url, '/foo');
     equal(window.request.body, '');
     equal(window.request.headers['content-type'], 'application/x-www-form-urlencoded');
-    equal(window.request.headers['accept'], '*/*');
+    equal(window.request.headers.accept, '*/*');
   });
 });
 
@@ -338,6 +338,6 @@ promiseTest('form POST request with async-accept', 6, function() {
     equal(window.request.url, '/foo');
     equal(window.request.body, '');
     equal(window.request.headers['content-type'], 'application/x-www-form-urlencoded');
-    equal(window.request.headers['accept'], 'application/json');
+    equal(window.request.headers.accept, 'application/json');
   });
 });
