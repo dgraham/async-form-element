@@ -21,6 +21,7 @@
     "module": false,
     "test": false,
     "asyncTest": false,
+    "promiseTest": false,
     "expect": false,
     "start": false,
     "stop": false,
