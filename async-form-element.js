@@ -119,10 +119,23 @@
     return urlencoded.join('&');
   };
 
+  function fire(name, target, detail) {
+    var event = document.createEvent('CustomEvent');
+    event.initCustomEvent(name, true, true, detail);
+    target.dispatchEvent(event);
+    return event;
+  }
+
   AsyncFormElementPrototype.request = function() {
     var form = this;
     return new Promise(function(resolve, reject) {
       var req = new XMLHttpRequest();
+
+      var event = fire('async-form:send', form, {xhr: req});
+      if (event.defaultPrevented) {
+        reject(new Error('Send event canceled'));
+        return;
+      }
 
       var method = form.asyncMethod;
       var url = form.action;
