@@ -160,6 +160,7 @@
       req.onload = function() {
         if (req.status === 200) {
           resolve(req.response);
+          fire('async-form:success', form, {xhr: req});
         } else {
           reject(new Error(req.statusText));
           fire('async-form:error', form, {xhr: req});
