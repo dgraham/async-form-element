@@ -162,11 +162,13 @@
           resolve(req.response);
         } else {
           reject(new Error(req.statusText));
+          fire('async-form:error', form, {xhr: req});
         }
       };
 
       req.onerror = function() {
         reject(new Error('Network Error'));
+        fire('async-form:error', form, {xhr: req});
       };
 
       req.send(body);
