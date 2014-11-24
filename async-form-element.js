@@ -161,15 +161,18 @@
         if (req.status === 200) {
           resolve(req.response);
           fire('async-form:success', form, {xhr: req});
+          fire('async-form:complete', form, {xhr: req});
         } else {
           reject(new Error(req.statusText));
           fire('async-form:error', form, {xhr: req});
+          fire('async-form:complete', form, {xhr: req});
         }
       };
 
       req.onerror = function() {
         reject(new Error('Network Error'));
         fire('async-form:error', form, {xhr: req});
+        fire('async-form:complete', form, {xhr: req});
       };
 
       req.send(body);
