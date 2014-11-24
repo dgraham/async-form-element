@@ -42,7 +42,7 @@
       equal(window.request.url, '/foo');
       equal(window.request.body, '');
       equal(window.request.headers['content-type'], 'application/x-www-form-urlencoded');
-    })
+    });
   });
 
   promiseTest('form request with unknown method', 5, function() {
@@ -156,7 +156,7 @@
 
       var textarea;
       textarea = window.document.createElement('textarea');
-      textarea.name = 'text'
+      textarea.name = 'text';
       textarea.value = 'foo';
       form.appendChild(textarea);
 
@@ -208,7 +208,7 @@
 
       var textarea;
       textarea = window.document.createElement('textarea');
-      textarea.name = 'text'
+      textarea.name = 'text';
       textarea.value = 'foo';
       form.appendChild(textarea);
 
@@ -270,7 +270,7 @@ promiseTest('form PUT request', 5, function() {
     equal(window.request.url, '/foo/1');
     equal(window.request.body, '');
     equal(window.request.headers['content-type'], 'application/x-www-form-urlencoded');
-  })
+  });
 });
 
 promiseTest('form DELETE request', 5, function() {
@@ -292,7 +292,7 @@ promiseTest('form DELETE request', 5, function() {
     equal(window.request.url, '/foo/1');
     equal(window.request.body, '');
     equal(window.request.headers['content-type'], 'application/x-www-form-urlencoded');
-  })
+  });
 });
 
 promiseTest('form POST request with default async-accept', 6, function() {
@@ -315,7 +315,7 @@ promiseTest('form POST request with default async-accept', 6, function() {
     equal(window.request.body, '');
     equal(window.request.headers['content-type'], 'application/x-www-form-urlencoded');
     equal(window.request.headers['accept'], '*/*');
-  })
+  });
 });
 
 promiseTest('form POST request with async-accept', 6, function() {
@@ -339,5 +339,5 @@ promiseTest('form POST request with async-accept', 6, function() {
     equal(window.request.body, '');
     equal(window.request.headers['content-type'], 'application/x-www-form-urlencoded');
     equal(window.request.headers['accept'], 'application/json');
-  })
+  });
 });
