@@ -204,10 +204,7 @@
   };
 
   Response.prototype.text = function() {
-    var body = this._body;
-    return new Promise(function(resolve, reject) {
-      resolve(body);
-    });
+    return Promise.resolve(this._body);
   };
 
   window.AsyncFormElement = document.registerElement('async-form', {
