@@ -179,6 +179,30 @@
     });
   };
 
+  var Response = function(xhr) {
+    this.status = xhr.status;
+    this.statusText = xhr.statusText;
+    this._body = xhr.responseText;
+  };
+
+  Response.prototype.json = function() {
+    var body = this._body;
+    return new Promise(function(resolve, reject) {
+      try {
+        resolve(JSON.parse(body));
+      } catch (ex) {
+        reject(ex);
+      }
+    });
+  };
+
+  Response.prototype.text = function() {
+    var body = this._body;
+    return new Promise(function(resolve, reject) {
+      resolve(body);
+    });
+  };
+
   window.AsyncFormElement = document.registerElement('async-form', {
     prototype: AsyncFormElementPrototype,
     'extends': 'form'
