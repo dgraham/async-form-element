@@ -21,8 +21,10 @@
 
   <script>
     function handleAsyncSubmit(event) {
-      event.submission.then(function(html) {
-        document.body.innerHTML = html;
+      event.submission.then(function(response) {
+        response.text().then(function(html) {
+          document.body.innerHTML = html;
+        });
         window.eval(document.getElementById('request-json').textContent);
         window.frameElement.resolve(window);
       }, function(error) {
