@@ -133,7 +133,7 @@
 
       var event = fire('loadstart', form, {xhr: req});
       if (event.defaultPrevented) {
-        reject(new Error('Send event canceled'));
+        reject(new Error('Form submit canceled'));
         return;
       }
 
