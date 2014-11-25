@@ -136,6 +136,8 @@
       var event = fire('loadstart', form);
       if (event.defaultPrevented) {
         reject(new Error('Form submit canceled'));
+        fire('abort', form);
+        fire('loadend', form);
         return;
       }
 
