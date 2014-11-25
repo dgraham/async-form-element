@@ -38,7 +38,7 @@
       resolve = _resolve;
       reject = _reject;
     });
-    return Object.create(promise, {
+    return Object.defineProperties(promise, {
       resolve: { value: resolve },
       reject: { value: reject }
     });
