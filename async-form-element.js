@@ -166,7 +166,9 @@
           fire('load', form, response);
           fire('loadend', form, response);
         } else {
-          reject(new Error(req.statusText));
+          var error = new Error(req.statusText);
+          error.response = response;
+          reject(error);
           fire('error', form, response);
           fire('loadend', form, response);
         }
