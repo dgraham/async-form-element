@@ -120,7 +120,8 @@
   };
 
   function fire(type, target, response) {
-    var event = new ProgressEvent(type);
+    var event = document.createEvent('ProgressEvent');
+    event.initEvent(type, true, true);
     if (response) {
       event.response = response;
     }
