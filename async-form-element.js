@@ -119,9 +119,11 @@
     return urlencoded.join('&');
   };
 
-  function fire(type, target, detail) {
+  function fire(type, target, response) {
     var event = new ProgressEvent(type);
-    event.detail = detail;
+    if (response) {
+      event.response = response;
+    }
     target.dispatchEvent(event);
     return event;
   }
@@ -131,7 +133,7 @@
     return new Promise(function(resolve, reject) {
       var req = new XMLHttpRequest();
 
-      var event = fire('loadstart', form, {xhr: req});
+      var event = fire('loadstart', form);
       if (event.defaultPrevented) {
         reject(new Error('Form submit canceled'));
         return;
@@ -158,21 +160,22 @@
       }
 
       req.onload = function() {
+        var response = new Response(req);
         if (req.status === 200) {
           resolve(req.response);
-          fire('load', form, {xhr: req});
-          fire('loadend', form, {xhr: req});
+          fire('load', form, response);
+          fire('loadend', form, response);
         } else {
           reject(new Error(req.statusText));
-          fire('error', form, {xhr: req});
-          fire('loadend', form, {xhr: req});
+          fire('error', form, response);
+          fire('loadend', form, response);
         }
       };
 
       req.onerror = function() {
         reject(new Error('Network Error'));
-        fire('error', form, {xhr: req});
-        fire('loadend', form, {xhr: req});
+        fire('error', form);
+        fire('loadend', form);
       };
 
       req.send(body);
