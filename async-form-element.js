@@ -119,9 +119,9 @@
     return urlencoded.join('&');
   };
 
-  function fire(name, target, detail) {
-    var event = document.createEvent('CustomEvent');
-    event.initCustomEvent(name, true, true, detail);
+  function fire(type, target, detail) {
+    var event = new ProgressEvent(type);
+    event.detail = detail;
     target.dispatchEvent(event);
     return event;
   }
@@ -131,7 +131,7 @@
     return new Promise(function(resolve, reject) {
       var req = new XMLHttpRequest();
 
-      var event = fire('async-form:send', form, {xhr: req});
+      var event = fire('loadstart', form, {xhr: req});
       if (event.defaultPrevented) {
         reject(new Error('Send event canceled'));
         return;
@@ -160,19 +160,19 @@
       req.onload = function() {
         if (req.status === 200) {
           resolve(req.response);
-          fire('async-form:success', form, {xhr: req});
-          fire('async-form:complete', form, {xhr: req});
+          fire('load', form, {xhr: req});
+          fire('loadend', form, {xhr: req});
         } else {
           reject(new Error(req.statusText));
-          fire('async-form:error', form, {xhr: req});
-          fire('async-form:complete', form, {xhr: req});
+          fire('error', form, {xhr: req});
+          fire('loadend', form, {xhr: req});
         }
       };
 
       req.onerror = function() {
         reject(new Error('Network Error'));
-        fire('async-form:error', form, {xhr: req});
-        fire('async-form:complete', form, {xhr: req});
+        fire('error', form, {xhr: req});
+        fire('loadend', form, {xhr: req});
       };
 
       req.send(body);
