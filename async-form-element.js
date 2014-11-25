@@ -162,7 +162,7 @@
       req.onload = function() {
         var response = new Response(req);
         if (req.status === 200) {
-          resolve(req.response);
+          resolve(response);
           fire('load', form, response);
           fire('loadend', form, response);
         } else {
