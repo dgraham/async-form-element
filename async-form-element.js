@@ -45,7 +45,7 @@
   }
 
   function nextTick(fn) {
-    Promise.resolve().then(fn);
+    setTimeout(fn, 0);
   }
 
   function captureAsyncFormSubmit(event) {
