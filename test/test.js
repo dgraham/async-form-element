@@ -8,7 +8,7 @@ var badFormMethodNormalization = (function() {
 
 // Yet another PhantomJS bug
 //   https://github.com/ariya/phantomjs/issues/10873
-var xhrDeleteBodyBuggy = navigator.userAgent.match(/PhantomJS/)
+var xhrDeleteBodyBuggy = navigator.userAgent.match(/PhantomJS/);
 
 function submit(form) {
   var event = document.createEvent('Event');
@@ -328,7 +328,7 @@ promiseTest('form DELETE request', 5, function() {
     equal(window.request.url, '/foo/1');
     equal(window.request.body, '');
     if (xhrDeleteBodyBuggy) {
-      ok(true)
+      ok(true);
     } else {
       equal(window.request.headers['content-type'], 'application/x-www-form-urlencoded');
     }
