@@ -52,7 +52,7 @@
     if (AsyncFormElementPrototype.isPrototypeOf(event.target)) {
       event.dispatched = makeDeferred();
       nextTick(function() {
-        event.dispatched.reject();
+        event.dispatched.reject(new Error('submit propagation stopped'));
       });
 
       event.submission = makeDeferred();
@@ -68,7 +68,7 @@
 
   function handleAsyncFormSubmit(event) {
     if (event.defaultPrevented) {
-      event.dispatched.reject();
+      event.dispatched.reject(new Error('submit default action canceled'));
     } else {
       event.dispatched.resolve();
     }
