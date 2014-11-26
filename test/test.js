@@ -64,7 +64,7 @@ asyncTest('successful form post dispatches progress events', 4, function() {
   });
 });
 
-asyncTest('canceled form post dispatches progress events', 3, function() {
+asyncTest('canceled form post dispatches progress events', 4, function() {
   var form = asyncForm('post');
 
   form.addEventListener('loadstart', function(event) {
@@ -86,6 +86,8 @@ asyncTest('canceled form post dispatches progress events', 3, function() {
 
   form.submit().then(function(response) {
     ok(false, 'Form submit should have been canceled.');
+  }).catch(function(error) {
+    ok(true, 'Canceled submit rejected promise.');
   });
 });
 
