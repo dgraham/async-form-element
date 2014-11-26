@@ -1,7 +1,7 @@
 build: node_modules/ bower_components/
 
-test: build lint
-	node ./test/run.js
+test: node_modules/ build lint
+	./test/run.sh
 
 lint: node_modules/
 	./node_modules/.bin/jshint *.js test/*.js

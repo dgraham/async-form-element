@@ -1,343 +1,316 @@
-['form', 'async-form'].forEach(function(formId) {
-  module(formId);
+function asyncForm(method) {
+  var form = document.createElement('form', 'async-form');
+  form.action = '/request';
+  form.method = method;
+  document.getElementById('qunit-fixture').appendChild(form);
+  return form;
+}
 
-  promiseTest('form GET request', 5, function() {
-    var ready = QUnit.createFrame();
-
-    return ready().then(function(window) {
-      var form = window.document.getElementById(formId);
-      window.CustomElements.upgrade(form);
-
-      form.method = 'GET';
-      form.action = '/foo';
-
-      equal(form.method, 'get');
-
-      form.submit();
-      return ready();
-    }).then(function(window) {
-      equal(window.request.method, 'GET');
-      equal(window.request.url.replace('?', ''), '/foo');
-      equal(window.request.body, '');
-      equal(window.request.headers['content-type'], null);
-    });
-  });
-
-  promiseTest('form POST request', 5, function() {
-    var ready = QUnit.createFrame();
-
-    return ready().then(function(window) {
-      var form = window.document.getElementById(formId);
-      window.CustomElements.upgrade(form);
-
-      form.method = 'POST';
-      form.action = '/foo';
-
-      equal(form.method, 'post');
-
-      form.submit();
-      return ready();
-    }).then(function(window) {
-      equal(window.request.method, 'POST');
-      equal(window.request.url, '/foo');
-      equal(window.request.body, '');
-      equal(window.request.headers['content-type'], 'application/x-www-form-urlencoded');
-    });
-  });
-
-  promiseTest('form request with unknown method', 5, function() {
-    var ready = QUnit.createFrame();
-
-    return ready().then(function(window) {
-      var form = window.document.getElementById(formId);
-      window.CustomElements.upgrade(form);
-
-      form.method = 'UPDATE';
-      form.action = '/foo';
-
-      equal(form.method, 'get');
-
-      form.submit();
-      return ready();
-    }).then(function(window) {
-      equal(window.request.method, 'GET');
-      equal(window.request.url.replace('?', ''), '/foo');
-      equal(window.request.body, '');
-      equal(window.request.headers['content-type'], null);
-    });
-  });
-
-  promiseTest('form GET request with field', 3, function() {
-    var ready = QUnit.createFrame();
-
-    return ready().then(function(window) {
-      var form = window.document.getElementById(formId);
-      window.CustomElements.upgrade(form);
-
-      form.method = 'GET';
-      form.action = '/foo';
-
-      var input = window.document.createElement('input');
-      input.type = 'hidden';
-      input.name = 'bar';
-      input.value = 'baz';
-      form.appendChild(input);
-
-      form.submit();
-      return ready();
-    }).then(function(window) {
-      equal(window.request.method, 'GET');
-      equal(window.request.url, '/foo?bar=baz');
-      equal(window.request.body, '');
-    });
-  });
-
-  promiseTest('form POST request with field', 3, function() {
-    var ready = QUnit.createFrame();
-
-    return ready().then(function(window) {
-      var form = window.document.getElementById(formId);
-      window.CustomElements.upgrade(form);
-
-      form.method = 'POST';
-      form.action = '/foo';
-
-      var input = window.document.createElement('input');
-      input.type = 'hidden';
-      input.name = 'bar';
-      input.value = 'baz';
-      form.appendChild(input);
-
-      form.submit();
-      return ready();
-    }).then(function(window) {
-      equal(window.request.method, 'POST');
-      equal(window.request.url, '/foo');
-      equal(window.request.body, 'bar=baz');
-    });
-  });
-
-  promiseTest('form GET request with fields', 3, function() {
-    var ready = QUnit.createFrame();
-
-    return ready().then(function(window) {
-      var form = window.document.getElementById(formId);
-      window.CustomElements.upgrade(form);
-
-      form.method = 'GET';
-      form.action = '/foo';
-
-      var input = window.document.createElement('input');
-      input.type = 'hidden';
-      input.name = 'foo';
-      input.value = '1';
-      form.appendChild(input);
-
-      input = window.document.createElement('input');
-      input.type = 'text';
-      input.name = 'bar';
-      input.value = '2';
-      form.appendChild(input);
-
-      var select, option;
-      select = window.document.createElement('select');
-      select.name = 'select';
-      form.appendChild(select);
-      option = window.document.createElement('option');
-      option.value = 'a';
-      option.selected = true;
-      select.appendChild(option);
-      option = window.document.createElement('option');
-      option.value = 'b';
-      select.appendChild(option);
-      option = window.document.createElement('option');
-      option.value = 'c';
-      select.appendChild(option);
-
-      var textarea;
-      textarea = window.document.createElement('textarea');
-      textarea.name = 'text';
-      textarea.value = 'foo';
-      form.appendChild(textarea);
-
-      form.submit();
-      return ready();
-    }).then(function(window) {
-      equal(window.request.method, 'GET');
-      equal(window.request.url, '/foo?foo=1&bar=2&select=a&text=foo');
-      equal(window.request.body, '');
-    });
-  });
-
-  promiseTest('form POST request with fields', 3, function() {
-    var ready = QUnit.createFrame();
-
-    return ready().then(function(window) {
-      var form = window.document.getElementById(formId);
-      window.CustomElements.upgrade(form);
-
-      form.method = 'POST';
-      form.action = '/foo';
-
-      var input = window.document.createElement('input');
-      input.type = 'hidden';
-      input.name = 'foo';
-      input.value = '1';
-      form.appendChild(input);
-
-      input = window.document.createElement('input');
-      input.type = 'text';
-      input.name = 'bar';
-      input.value = '2';
-      form.appendChild(input);
-
-      var select, option;
-      select = window.document.createElement('select');
-      select.name = 'select';
-      form.appendChild(select);
-      option = window.document.createElement('option');
-      option.value = 'a';
-      option.selected = true;
-      select.appendChild(option);
-      option = window.document.createElement('option');
-      option.value = 'b';
-      select.appendChild(option);
-      option = window.document.createElement('option');
-      option.value = 'c';
-      select.appendChild(option);
-
-      var textarea;
-      textarea = window.document.createElement('textarea');
-      textarea.name = 'text';
-      textarea.value = 'foo';
-      form.appendChild(textarea);
-
-      form.submit();
-      return ready();
-    }).then(function(window) {
-      equal(window.request.method, 'POST');
-      equal(window.request.url, '/foo');
-      equal(window.request.body, 'foo=1&bar=2&select=a&text=foo');
-    });
-  });
-
-  promiseTest('form multipart POST request with field', 5, function() {
-    var ready = QUnit.createFrame();
-
-    return ready().then(function(window) {
-      var form = window.document.getElementById(formId);
-      window.CustomElements.upgrade(form);
-
-      form.method = 'POST';
-      form.action = '/foo';
-      form.enctype = 'multipart/form-data';
-
-      var input = window.document.createElement('input');
-      input.type = 'hidden';
-      input.name = 'bar';
-      input.value = 'baz';
-      form.appendChild(input);
-
-      form.submit();
-      return ready();
-    }).then(function(window) {
-      equal(window.request.method, 'POST');
-      equal(window.request.url, '/foo');
-      var lines = window.request.body.split(/\r\n?/);
-      equal(lines[1], 'Content-Disposition: form-data; name="bar"');
-      equal(lines[3], 'baz');
-      ok(window.request.headers['content-type'].match('multipart/form-data'), window.request.headers['content-type']);
-    });
+asyncTest('form GET request', 5, function() {
+  var form = asyncForm('get');
+  form.submit().then(function(response) {
+    equal(response.status, 200);
+    return response.json();
+  }).then(function (json) {
+    equal(json.method, 'GET');
+    equal(json.url.replace('?', ''), '/request');
+    equal(json.data, '');
+    equal(json.headers['content-type'], null);
+    start();
+  }).catch(function(error) {
+    ok(false, error);
+    start();
   });
 });
 
-promiseTest('form PUT request', 5, function() {
-  var ready = QUnit.createFrame();
-
-  return ready().then(function(window) {
-    var form = window.document.getElementById('async-form');
-    window.CustomElements.upgrade(form);
-
-    form.method = 'PUT';
-    form.action = '/foo/1';
-
-    equal(form.asyncMethod, 'put');
-
-    form.submit();
-    return ready();
-  }).then(function(window) {
-    equal(window.request.method, 'PUT');
-    equal(window.request.url, '/foo/1');
-    equal(window.request.body, '');
-    equal(window.request.headers['content-type'], 'application/x-www-form-urlencoded');
+asyncTest('form POST request', 5, function() {
+  var form = asyncForm('post');
+  form.submit().then(function(response) {
+    equal(response.status, 200);
+    return response.json();
+  }).then(function (json) {
+    equal(json.method, 'POST');
+    equal(json.url.replace('?', ''), '/request');
+    equal(json.data, '');
+    equal(json.headers['content-type'], 'application/x-www-form-urlencoded');
+    start();
+  }).catch(function(error) {
+    ok(false, error);
+    start();
   });
 });
 
-promiseTest('form DELETE request', 5, function() {
-  var ready = QUnit.createFrame();
-
-  return ready().then(function(window) {
-    var form = window.document.getElementById('async-form');
-    window.CustomElements.upgrade(form);
-
-    form.method = 'DELETE';
-    form.action = '/foo/1';
-
-    equal(form.asyncMethod, 'delete');
-
-    form.submit();
-    return ready();
-  }).then(function(window) {
-    equal(window.request.method, 'DELETE');
-    equal(window.request.url, '/foo/1');
-    equal(window.request.body, '');
-    equal(window.request.headers['content-type'], 'application/x-www-form-urlencoded');
+asyncTest('form request with unknown method', 5, function() {
+  var form = asyncForm('update');
+  form.submit().then(function(response) {
+    equal(response.status, 200);
+    return response.json();
+  }).then(function (json) {
+    equal(json.method, 'GET');
+    equal(json.url.replace('?', ''), '/request');
+    equal(json.data, '');
+    equal(json.headers['content-type'], null);
+    start();
+  }).catch(function(error) {
+    ok(false, error);
+    start();
   });
 });
 
-promiseTest('form POST request with default async-accept', 6, function() {
-  var ready = QUnit.createFrame();
+asyncTest('form GET request with field', 4, function() {
+  var form = asyncForm('get');
 
-  return ready().then(function(window) {
-    var form = window.document.getElementById('async-form');
-    window.CustomElements.upgrade(form);
+  var input = document.createElement('input');
+  input.type = 'hidden';
+  input.name = 'bar';
+  input.value = 'baz';
+  form.appendChild(input);
 
-    form.method = 'POST';
-    form.action = '/foo';
-
-    equal(form.asyncAccept, '*/*');
-
-    form.submit();
-    return ready();
-  }).then(function(window) {
-    equal(window.request.method, 'POST');
-    equal(window.request.url, '/foo');
-    equal(window.request.body, '');
-    equal(window.request.headers['content-type'], 'application/x-www-form-urlencoded');
-    equal(window.request.headers.accept, '*/*');
+  form.submit().then(function(response) {
+    equal(response.status, 200);
+    return response.json();
+  }).then(function (json) {
+    equal(json.method, 'GET');
+    equal(json.url, '/request?bar=baz');
+    equal(json.data, '');
+    start();
+  }).catch(function(error) {
+    ok(false, error);
+    start();
   });
 });
 
-promiseTest('form POST request with async-accept', 6, function() {
-  var ready = QUnit.createFrame();
+asyncTest('form POST request with field', 4, function() {
+  var form = asyncForm('post');
 
-  return ready().then(function(window) {
-    var form = window.document.getElementById('async-form');
-    window.CustomElements.upgrade(form);
+  var input = document.createElement('input');
+  input.type = 'hidden';
+  input.name = 'bar';
+  input.value = 'baz';
+  form.appendChild(input);
 
-    form.method = 'POST';
-    form.action = '/foo';
-    form.asyncAccept = 'application/json';
+  form.submit().then(function(response) {
+    equal(response.status, 200);
+    return response.json();
+  }).then(function (json) {
+    equal(json.method, 'POST');
+    equal(json.url, '/request');
+    equal(json.data, 'bar=baz');
+    start();
+  }).catch(function(error) {
+    ok(false, error);
+    start();
+  });
+});
 
-    equal(form.asyncAccept, 'application/json');
+asyncTest('form GET request with fields', 4, function() {
+  var form = asyncForm('get');
 
-    form.submit();
-    return ready();
-  }).then(function(window) {
-    equal(window.request.method, 'POST');
-    equal(window.request.url, '/foo');
-    equal(window.request.body, '');
-    equal(window.request.headers['content-type'], 'application/x-www-form-urlencoded');
-    equal(window.request.headers.accept, 'application/json');
+  var input = document.createElement('input');
+  input.type = 'hidden';
+  input.name = 'foo';
+  input.value = '1';
+  form.appendChild(input);
+
+  input = document.createElement('input');
+  input.type = 'text';
+  input.name = 'bar';
+  input.value = '2';
+  form.appendChild(input);
+
+  var select, option;
+  select = document.createElement('select');
+  select.name = 'select';
+  form.appendChild(select);
+
+  option = document.createElement('option');
+  option.value = 'a';
+  option.selected = true;
+  select.appendChild(option);
+
+  option = document.createElement('option');
+  option.value = 'b';
+  select.appendChild(option);
+
+  option = document.createElement('option');
+  option.value = 'c';
+  select.appendChild(option);
+
+  var textarea = document.createElement('textarea');
+  textarea.name = 'text';
+  textarea.value = 'foo';
+  form.appendChild(textarea);
+
+  form.submit().then(function(response) {
+    equal(response.status, 200);
+    return response.json();
+  }).then(function (json) {
+    equal(json.method, 'GET');
+    equal(json.url, '/request?foo=1&bar=2&select=a&text=foo');
+    equal(json.data, '');
+    start();
+  }).catch(function(error) {
+    ok(false, error);
+    start();
+  });
+});
+
+asyncTest('form POST request with fields', 4, function() {
+  var form = asyncForm('post');
+
+  var input = document.createElement('input');
+  input.type = 'hidden';
+  input.name = 'foo';
+  input.value = '1';
+  form.appendChild(input);
+
+  input = document.createElement('input');
+  input.type = 'text';
+  input.name = 'bar';
+  input.value = '2';
+  form.appendChild(input);
+
+  var select, option;
+  select = document.createElement('select');
+  select.name = 'select';
+  form.appendChild(select);
+
+  option = document.createElement('option');
+  option.value = 'a';
+  option.selected = true;
+  select.appendChild(option);
+
+  option = document.createElement('option');
+  option.value = 'b';
+  select.appendChild(option);
+
+  option = document.createElement('option');
+  option.value = 'c';
+  select.appendChild(option);
+
+  var textarea = document.createElement('textarea');
+  textarea.name = 'text';
+  textarea.value = 'foo';
+  form.appendChild(textarea);
+
+  form.submit().then(function(response) {
+    equal(response.status, 200);
+    return response.json();
+  }).then(function (json) {
+    equal(json.method, 'POST');
+    equal(json.url, '/request');
+    equal(json.data, 'foo=1&bar=2&select=a&text=foo');
+    start();
+  }).catch(function(error) {
+    ok(false, error);
+    start();
+  });
+});
+
+asyncTest('form multipart POST request with field', 6, function() {
+  var form = asyncForm('post');
+  form.enctype = 'multipart/form-data';
+
+  var input = document.createElement('input');
+  input.type = 'hidden';
+  input.name = 'bar';
+  input.value = 'baz';
+  form.appendChild(input);
+
+  form.submit().then(function(response) {
+    equal(response.status, 200);
+    return response.json();
+  }).then(function (json) {
+    equal(json.method, 'POST');
+    equal(json.url, '/request');
+
+    var lines = json.data.split(/\r\n?/);
+    equal(lines[1], 'Content-Disposition: form-data; name="bar"');
+    equal(lines[3], 'baz');
+    ok(json.headers['content-type'].match('multipart/form-data'), json.headers['content-type']);
+
+    start();
+  }).catch(function(error) {
+    ok(false, error);
+    start();
+  });
+});
+
+asyncTest('form PUT request', 5, function() {
+  var form = asyncForm('put');
+
+  form.submit().then(function(response) {
+    equal(response.status, 200);
+    return response.json();
+  }).then(function (json) {
+    equal(json.method, 'PUT');
+    equal(json.url, '/request');
+    equal(json.data, '');
+    equal(json.headers['content-type'], 'application/x-www-form-urlencoded');
+    start();
+  }).catch(function(error) {
+    ok(false, error);
+    start();
+  });
+});
+
+asyncTest('form DELETE request', 5, function() {
+  var form = asyncForm('delete');
+
+  form.submit().then(function(response) {
+    equal(response.status, 200);
+    return response.json();
+  }).then(function (json) {
+    equal(json.method, 'DELETE');
+    equal(json.url, '/request');
+    equal(json.data, '');
+    equal(json.headers['content-type'], 'application/x-www-form-urlencoded');
+    start();
+  }).catch(function(error) {
+    ok(false, error);
+    start();
+  });
+});
+
+asyncTest('form POST request with default async-accept', 7, function() {
+  var form = asyncForm('post');
+
+  equal(form.asyncAccept, '*/*');
+
+  form.submit().then(function(response) {
+    equal(response.status, 200);
+    return response.json();
+  }).then(function (json) {
+    equal(json.method, 'POST');
+    equal(json.url, '/request');
+    equal(json.data, '');
+    equal(json.headers['content-type'], 'application/x-www-form-urlencoded');
+    equal(json.headers.accept, '*/*');
+    start();
+  }).catch(function(error) {
+    ok(false, error);
+    start();
+  });
+});
+
+asyncTest('form POST request with custom async-accept', 7, function() {
+  var form = asyncForm('post');
+  form.asyncAccept = 'application/json';
+
+  equal(form.asyncAccept, 'application/json');
+
+  form.submit().then(function(response) {
+    equal(response.status, 200);
+    return response.json();
+  }).then(function (json) {
+    equal(json.method, 'POST');
+    equal(json.url, '/request');
+    equal(json.data, '');
+    equal(json.headers['content-type'], 'application/x-www-form-urlencoded');
+    equal(json.headers.accept, 'application/json');
+    start();
+  }).catch(function(error) {
+    ok(false, error);
+    start();
   });
 });
