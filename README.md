@@ -32,13 +32,13 @@ Any async form behaves just like a regular form element, except when submitted, 
 ``` javascript
 form.addEventListener('submit', function(event) {
   // event.submission is a promise tracking the form submission progress.
-  event.submission.then(function() {
+  event.submission.then(function(response) {
     console.log('form submitted successfully');
   });
 });
 
 // Explicit submit() invocations return the submission promise
-form.submit().then(function() {
+form.submit().then(function(response) {
   console.log('form submitted successfully');
 });
 ```
