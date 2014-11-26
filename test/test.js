@@ -40,7 +40,7 @@ asyncTest('form POST request', 5, function() {
   });
 });
 
-asyncTest('form post dispatches progress events', 4, function() {
+asyncTest('successful form post dispatches progress events', 4, function() {
   var form = asyncForm('post');
 
   form.addEventListener('loadstart', function(event) {
@@ -63,6 +63,32 @@ asyncTest('form post dispatches progress events', 4, function() {
     start();
   });
 });
+
+asyncTest('canceled form post dispatches progress events', 3, function() {
+  var form = asyncForm('post');
+
+  form.addEventListener('loadstart', function(event) {
+    event.stopPropagation();
+    event.preventDefault();
+    ok(true, 'Received loadstart event');
+  });
+
+  form.addEventListener('abort', function(event) {
+    event.stopPropagation();
+    ok(true, 'Received abort event');
+  });
+
+  form.addEventListener('loadend', function(event) {
+    event.stopPropagation();
+    ok(true, 'Received loadend event');
+    start();
+  });
+
+  form.submit().then(function(response) {
+    ok(false, 'Form submit should have been canceled.');
+  });
+});
+
 asyncTest('failing form post rejects promise', 3, function() {
   var form = asyncForm('post', '/boom');
 
