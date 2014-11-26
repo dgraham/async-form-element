@@ -20,17 +20,18 @@
   </form>
 
   <script>
-    function handleAsyncSubmit(event) {
-      event.submission.then(function(html) {
+    function handleFormResponse(response) {
+      return response.then(function(html) {
         document.body.innerHTML = html;
         window.eval(document.getElementById('request-json').textContent);
         window.frameElement.resolve(window);
+        return window;
       }, function(error) {
         window.frameElement.reject(error);
       })
     }
   </script>
-  <form is="async-form" id="async-form" onsubmit="handleAsyncSubmit(event)">
+  <form is="async-form" id="async-form" onsubmit="handleFormResponse(event.submission)">
   </form>
 
   <script>

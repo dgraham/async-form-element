@@ -1,3 +1,12 @@
+function submit(form) {
+  var event = document.createEvent('Event');
+  event.initEvent('submit', true, true);
+  form.dispatchEvent(event);
+  if (event.defaultPrevented === false) {
+    form.submit();
+  }
+}
+
 ['form', 'async-form'].forEach(function(formId) {
   module(formId);
 
@@ -13,7 +22,7 @@
 
       equal(form.method, 'get');
 
-      form.submit();
+      submit(form);
       return ready();
     }).then(function(window) {
       equal(window.request.method, 'GET');
@@ -35,7 +44,7 @@
 
       equal(form.method, 'post');
 
-      form.submit();
+      submit(form);
       return ready();
     }).then(function(window) {
       equal(window.request.method, 'POST');
@@ -57,7 +66,7 @@
 
       equal(form.method, 'get');
 
-      form.submit();
+      submit(form);
       return ready();
     }).then(function(window) {
       equal(window.request.method, 'GET');
@@ -83,7 +92,7 @@
       input.value = 'baz';
       form.appendChild(input);
 
-      form.submit();
+      submit(form);
       return ready();
     }).then(function(window) {
       equal(window.request.method, 'GET');
@@ -108,7 +117,7 @@
       input.value = 'baz';
       form.appendChild(input);
 
-      form.submit();
+      submit(form);
       return ready();
     }).then(function(window) {
       equal(window.request.method, 'POST');
@@ -160,7 +169,7 @@
       textarea.value = 'foo';
       form.appendChild(textarea);
 
-      form.submit();
+      submit(form);
       return ready();
     }).then(function(window) {
       equal(window.request.method, 'GET');
@@ -212,7 +221,7 @@
       textarea.value = 'foo';
       form.appendChild(textarea);
 
-      form.submit();
+      submit(form);
       return ready();
     }).then(function(window) {
       equal(window.request.method, 'POST');
@@ -238,7 +247,7 @@
       input.value = 'baz';
       form.appendChild(input);
 
-      form.submit();
+      submit(form);
       return ready();
     }).then(function(window) {
       equal(window.request.method, 'POST');
@@ -263,7 +272,7 @@ promiseTest('form PUT request', 5, function() {
 
     equal(form.asyncMethod, 'put');
 
-    form.submit();
+    submit(form);
     return ready();
   }).then(function(window) {
     equal(window.request.method, 'PUT');
@@ -272,6 +281,9 @@ promiseTest('form PUT request', 5, function() {
     equal(window.request.headers['content-type'], 'application/x-www-form-urlencoded');
   });
 });
+
+
+module('async-form');
 
 promiseTest('form DELETE request', 5, function() {
   var ready = QUnit.createFrame();
@@ -285,7 +297,7 @@ promiseTest('form DELETE request', 5, function() {
 
     equal(form.asyncMethod, 'delete');
 
-    form.submit();
+    submit(form);
     return ready();
   }).then(function(window) {
     equal(window.request.method, 'DELETE');
@@ -307,7 +319,7 @@ promiseTest('form POST request with default async-accept', 6, function() {
 
     equal(form.asyncAccept, '*/*');
 
-    form.submit();
+    submit(form);
     return ready();
   }).then(function(window) {
     equal(window.request.method, 'POST');
@@ -331,7 +343,7 @@ promiseTest('form POST request with async-accept', 6, function() {
 
     equal(form.asyncAccept, 'application/json');
 
-    form.submit();
+    submit(form);
     return ready();
   }).then(function(window) {
     equal(window.request.method, 'POST');
@@ -339,5 +351,47 @@ promiseTest('form POST request with async-accept', 6, function() {
     equal(window.request.body, '');
     equal(window.request.headers['content-type'], 'application/x-www-form-urlencoded');
     equal(window.request.headers.accept, 'application/json');
+  });
+});
+
+promiseTest('form asyncSubmit GET request', 5, function() {
+  var ready = QUnit.createFrame();
+
+  return ready().then(function(window) {
+    var form = window.document.getElementById('async-form');
+    window.CustomElements.upgrade(form);
+
+    form.method = 'GET';
+    form.action = '/foo';
+
+    equal(form.method, 'get');
+
+    return window.handleFormResponse(form.asyncSubmit());
+  }).then(function(window) {
+    equal(window.request.method, 'GET');
+    equal(window.request.url.replace('?', ''), '/foo');
+    equal(window.request.body, '');
+    equal(window.request.headers['content-type'], null);
+  });
+});
+
+promiseTest('form asyncSubmit POST request', 5, function() {
+  var ready = QUnit.createFrame();
+
+  return ready().then(function(window) {
+    var form = window.document.getElementById('async-form');
+    window.CustomElements.upgrade(form);
+
+    form.method = 'POST';
+    form.action = '/foo';
+
+    equal(form.method, 'post');
+
+    return window.handleFormResponse(form.asyncSubmit());
+  }).then(function(window) {
+    equal(window.request.method, 'POST');
+    equal(window.request.url, '/foo');
+    equal(window.request.body, '');
+    equal(window.request.headers['content-type'], 'application/x-www-form-urlencoded');
   });
 });

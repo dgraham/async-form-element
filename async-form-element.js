@@ -83,11 +83,8 @@
   AsyncFormElementPrototype.createdCallback = function() {
   };
 
-  AsyncFormElementPrototype.submit = function() {
-    var event = document.createEvent('Event');
-    event.initEvent('submit', true, true);
-    this.dispatchEvent(event);
-    return event.submission;
+  AsyncFormElementPrototype.asyncSubmit = function() {
+    return this.request();
   };
 
   AsyncFormElementPrototype.serializeArray = function() {
