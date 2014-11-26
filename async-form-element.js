@@ -52,7 +52,7 @@
     if (AsyncFormElementPrototype.isPrototypeOf(event.target)) {
       event.dispatched = makeDeferred();
       nextTick(function() {
-        event.dispatched.reject(new Error('submit propagation stopped'));
+        handleAsyncFormSubmit(event);
       });
 
       event.submission = makeDeferred();

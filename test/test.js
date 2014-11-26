@@ -310,6 +310,28 @@ function submit(form) {
       ok(window.request.headers['content-type'].match('multipart/form-data'), window.request.headers['content-type']);
     });
   });
+
+  promiseTest('form with submit event propagation stopped', 2, function() {
+    var ready = QUnit.createFrame();
+
+    return ready().then(function(window) {
+      var form = window.document.getElementById(formId);
+      window.CustomElements.upgrade(form);
+
+      form.method = 'GET';
+      form.action = '/foo';
+
+      form.addEventListener('submit', function(event) {
+        event.stopPropagation();
+      });
+
+      submit(form);
+      return ready();
+    }).then(function(window) {
+      equal(window.request.method, 'GET');
+      equal(window.request.url.replace('?', ''), '/foo');
+    });
+  });
 });
 
 promiseTest('form PUT request', 5, function() {
@@ -449,5 +471,66 @@ promiseTest('form asyncSubmit POST request', 5, function() {
     equal(window.request.url, '/foo');
     equal(window.request.body, '');
     equal(window.request.headers['content-type'], 'application/x-www-form-urlencoded');
+  });
+});
+
+// TODO: Write as a shared form and async-form test
+promiseTest('form submit prevent default', 2, function() {
+  var ready = QUnit.createFrame();
+
+  return ready().then(function(window) {
+    var form = window.document.getElementById('async-form');
+    window.CustomElements.upgrade(form);
+
+    form.method = 'GET';
+    form.action = '/foo';
+
+    var nextSubmit = new Promise(function(resolve) {
+      form.addEventListener('submit', function(event) {
+        event.submission.then(function() {
+          ok(false);
+          resolve();
+        }, function(error) {
+          ok(error);
+          equal(error.message, 'submit default action canceled');
+          resolve();
+        });
+        event.preventDefault();
+      });
+    });
+
+    submit(form);
+    return nextSubmit;
+  });
+});
+
+// TODO: Write as a shared form and async-form test
+promiseTest('form submit prevent default and propagation stopped', 2, function() {
+  var ready = QUnit.createFrame();
+
+  return ready().then(function(window) {
+    var form = window.document.getElementById('async-form');
+    window.CustomElements.upgrade(form);
+
+    form.method = 'GET';
+    form.action = '/foo';
+
+    var nextSubmit = new Promise(function(resolve) {
+      form.addEventListener('submit', function(event) {
+        event.submission.then(function() {
+          ok(false);
+          resolve();
+        }, function(error) {
+          ok(error);
+          equal(error.message, 'submit default action canceled');
+          resolve();
+        });
+        event.preventDefault();
+        event.stopPropagation();
+      });
+    });
+
+    submit(form);
+    return nextSubmit;
   });
 });
