@@ -1,6 +1,6 @@
-function asyncForm(method) {
+function asyncForm(method, url) {
   var form = document.createElement('form', 'async-form');
-  form.action = '/request';
+  form.action = url || '/request';
   form.method = method;
   document.getElementById('qunit-fixture').appendChild(form);
   return form;
@@ -36,6 +36,41 @@ asyncTest('form POST request', 5, function() {
     start();
   }).catch(function(error) {
     ok(false, error);
+    start();
+  });
+});
+
+asyncTest('failing form post rejects promise', 2, function() {
+  var form = asyncForm('post', '/boom');
+
+  form.addEventListener('error', function(event) {
+    event.stopPropagation();
+    ok(true, 'Received error event');
+  });
+
+  form.submit().then(function() {
+    ok(false);
+    start();
+  }).catch(function(error) {
+    equal(error.response.status, 500);
+    start();
+  });
+});
+
+asyncTest('network error on form post rejects promise', 3, function() {
+  var form = asyncForm('post', '/error');
+
+  form.addEventListener('error', function(event) {
+    event.stopPropagation();
+    ok(true, 'Received error event');
+  });
+
+  form.submit().then(function() {
+    ok(false);
+    start();
+  }).catch(function(error) {
+    equal(error.message, 'Network Error');
+    equal(error.response, null);
     start();
   });
 });
