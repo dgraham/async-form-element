@@ -1,3 +1,15 @@
+// PhantomJS is an old turd that doesn't normalize form methods correctly
+//   https://github.com/ariya/phantomjs/issues/12056
+var badFormMethodNormalization = (function() {
+  var form = document.createElement('form');
+  form.method = 'POST';
+  return form.method !== 'post';
+})();
+
+// Yet another PhantomJS bug
+//   https://github.com/ariya/phantomjs/issues/10873
+var xhrDeleteBodyBuggy = navigator.userAgent.match(/PhantomJS/)
+
 function submit(form) {
   var event = document.createEvent('Event');
   event.initEvent('submit', true, true);
@@ -20,7 +32,11 @@ function submit(form) {
       form.method = 'GET';
       form.action = '/foo';
 
-      equal(form.method, 'get');
+      if (badFormMethodNormalization) {
+        equal(form.method, 'GET');
+      } else {
+        equal(form.method, 'get');
+      }
 
       submit(form);
       return ready();
@@ -42,7 +58,11 @@ function submit(form) {
       form.method = 'POST';
       form.action = '/foo';
 
-      equal(form.method, 'post');
+      if (badFormMethodNormalization) {
+        equal(form.method, 'POST');
+      } else {
+        equal(form.method, 'post');
+      }
 
       submit(form);
       return ready();
@@ -64,7 +84,11 @@ function submit(form) {
       form.method = 'UPDATE';
       form.action = '/foo';
 
-      equal(form.method, 'get');
+      if (badFormMethodNormalization) {
+        equal(form.method, 'UPDATE');
+      } else {
+        equal(form.method, 'get');
+      }
 
       submit(form);
       return ready();
@@ -303,7 +327,11 @@ promiseTest('form DELETE request', 5, function() {
     equal(window.request.method, 'DELETE');
     equal(window.request.url, '/foo/1');
     equal(window.request.body, '');
-    equal(window.request.headers['content-type'], 'application/x-www-form-urlencoded');
+    if (xhrDeleteBodyBuggy) {
+      ok(true)
+    } else {
+      equal(window.request.headers['content-type'], 'application/x-www-form-urlencoded');
+    }
   });
 });
 
@@ -364,7 +392,7 @@ promiseTest('form asyncSubmit GET request', 5, function() {
     form.method = 'GET';
     form.action = '/foo';
 
-    equal(form.method, 'get');
+    equal(form.asyncMethod, 'get');
 
     return window.handleFormResponse(form.asyncSubmit());
   }).then(function(window) {
@@ -385,7 +413,7 @@ promiseTest('form asyncSubmit POST request', 5, function() {
     form.method = 'POST';
     form.action = '/foo';
 
-    equal(form.method, 'post');
+    equal(form.asyncMethod, 'post');
 
     return window.handleFormResponse(form.asyncSubmit());
   }).then(function(window) {
