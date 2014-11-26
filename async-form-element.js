@@ -48,11 +48,19 @@
     Promise.resolve().then(fn);
   }
 
+  function resolveDispatch(event) {
+    if (event.defaultPrevented) {
+      event.dispatched.reject(new Error('submit default action canceled'));
+    } else {
+      event.dispatched.resolve();
+    }
+  }
+
   function captureAsyncFormSubmit(event) {
     if (AsyncFormElementPrototype.isPrototypeOf(event.target)) {
       event.dispatched = makeDeferred();
       nextTick(function() {
-        handleAsyncFormSubmit(event);
+        resolveDispatch(event);
       });
 
       event.submission = makeDeferred();
@@ -67,11 +75,7 @@
   }
 
   function handleAsyncFormSubmit(event) {
-    if (event.defaultPrevented) {
-      event.dispatched.reject(new Error('submit default action canceled'));
-    } else {
-      event.dispatched.resolve();
-    }
+    resolveDispatch(event);
 
     // Always disable default form submit
     event.preventDefault();
