@@ -37,8 +37,8 @@ form.addEventListener('submit', function(event) {
   });
 });
 
-// Explicit submit() invocations return the submission promise
-form.submit().then(function() {
+// Explicit asyncSubmit() invocations return the submission promise
+form.asyncSubmit().then(function() {
   console.log('form submitted successfully');
 });
 ```
