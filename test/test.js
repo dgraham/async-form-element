@@ -40,6 +40,29 @@ asyncTest('form POST request', 5, function() {
   });
 });
 
+asyncTest('form post dispatches progress events', 4, function() {
+  var form = asyncForm('post');
+
+  form.addEventListener('loadstart', function(event) {
+    event.stopPropagation();
+    ok(true, 'Received loadstart event');
+  });
+
+  form.addEventListener('load', function(event) {
+    event.stopPropagation();
+    ok(true, 'Received load event');
+  });
+
+  form.addEventListener('loadend', function(event) {
+    event.stopPropagation();
+    ok(true, 'Received loadend event');
+  });
+
+  form.submit().then(function(response) {
+    equal(response.status, 200);
+    start();
+  });
+});
 asyncTest('failing form post rejects promise', 3, function() {
   var form = asyncForm('post', '/boom');
 
