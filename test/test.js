@@ -40,12 +40,17 @@ asyncTest('form POST request', 5, function() {
   });
 });
 
-asyncTest('failing form post rejects promise', 2, function() {
+asyncTest('failing form post rejects promise', 3, function() {
   var form = asyncForm('post', '/boom');
 
   form.addEventListener('error', function(event) {
     event.stopPropagation();
     ok(true, 'Received error event');
+  });
+
+  form.addEventListener('loadend', function(event) {
+    event.stopPropagation();
+    ok(true, 'Received loadend event');
   });
 
   form.submit().then(function() {
@@ -57,12 +62,17 @@ asyncTest('failing form post rejects promise', 2, function() {
   });
 });
 
-asyncTest('network error on form post rejects promise', 3, function() {
+asyncTest('network error on form post rejects promise', 4, function() {
   var form = asyncForm('post', '/error');
 
   form.addEventListener('error', function(event) {
     event.stopPropagation();
     ok(true, 'Received error event');
+  });
+
+  form.addEventListener('loadend', function(event) {
+    event.stopPropagation();
+    ok(true, 'Received loadend event');
   });
 
   form.submit().then(function() {
