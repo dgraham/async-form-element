@@ -87,27 +87,18 @@
     return this.request();
   };
 
-  AsyncFormElementPrototype.serializeArray = function() {
+  AsyncFormElementPrototype.serializeFormData = function() {
+    return new FormData(this);
+  };
+
+  AsyncFormElementPrototype.serializeUrlEncoded = function() {
     var params = [];
     var i, els = this.elements;
     for (i = 0; i < els.length; i++) {
       params.push([els[i].name, els[i].value]);
     }
-    return params;
-  };
 
-  AsyncFormElementPrototype.serializeFormData = function() {
-    var data = new FormData();
-    var i, params = this.serializeArray();
-    for (i = 0; i < params.length; i++) {
-      data.append(params[i][0], params[i][1]);
-    }
-    return data;
-  };
-
-  AsyncFormElementPrototype.serialize = function() {
     var urlencoded = [];
-    var i, params = this.serializeArray();
     for (i = 0; i < params.length; i++) {
       urlencoded.push(encodeURIComponent(params[i][0]) +
         '=' +
@@ -124,7 +115,7 @@
       var method = form.asyncMethod;
       var url = form.action;
       if (method === 'get') {
-        url += '?' + form.serialize();
+        url += '?' + form.serializeUrlEncoded();
       }
       var body;
 
@@ -137,7 +128,7 @@
         if (form.enctype === 'multipart/form-data') {
           body = form.serializeFormData();
         } else {
-          body = form.serialize();
+          body = form.serializeUrlEncoded();
         }
       }
 
