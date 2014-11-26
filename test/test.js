@@ -84,10 +84,10 @@ asyncTest('canceled form post dispatches progress events', 4, function() {
     start();
   });
 
-  form.submit().then(function(response) {
+  form.submit().then(function() {
     ok(false, 'Form submit should have been canceled.');
   }).catch(function(error) {
-    ok(true, 'Canceled submit rejected promise.');
+    ok(error instanceof Error, 'Canceled submit rejected promise.');
   });
 });
 
