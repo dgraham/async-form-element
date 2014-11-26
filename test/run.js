@@ -10,7 +10,10 @@ server.on('listening', function() {
   var host = 'localhost:' + port;
 
   var process = phantomjs('http://'+host+'/test/test.html');
-  process.on('exit', function() {
+  process.on('exit', function(code) {
+    server.on('close', function() {
+      global.process.exit(code);
+    });
     server.close();
   });
 });
