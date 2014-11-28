@@ -99,12 +99,13 @@ server.on('listening', function() {
         throw 'tests failed';
       }
     });
-  })['catch'](function(error) {
+  }).then(function() {
+    server.close();
+    global.process.exit(0);
+  }, function(error) {
     setImmediate(function() {
       throw error;
     });
-  }).then(function() {
-    server.close();
   });
 });
 server.listen(8080);
