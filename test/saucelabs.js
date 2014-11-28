@@ -61,11 +61,11 @@ server.on('listening', function() {
         if (obj.completed === true) {
           return obj;
         } else {
-          return check();
+          return setTimeout(check, 2 * 1000);
         }
       });
     }
-    return Promise.race([check(), timeout(180000)]);
+    return Promise.race([check(), timeout(180 * 1000)]);
   }).then(function(obj) {
     var test = obj['js tests'][0];
     console.log(test.url);
