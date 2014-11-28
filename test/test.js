@@ -33,16 +33,16 @@ function submit(form) {
       form.action = '/foo';
 
       if (badFormMethodNormalization) {
-        equal(form.method, 'GET');
+        equal(form.method, 'GET', 'form.method should be "GET"');
       } else {
-        equal(form.method, 'get');
+        equal(form.method, 'get', 'form.method should be "get"');
       }
 
       submit(form);
       return ready();
     }).then(function(window) {
-      equal(window.request.method, 'GET');
-      equal(window.request.url.replace('?', ''), '/foo');
+      equal(window.request.method, 'GET', 'request method should be "GET"');
+      equal(window.request.url.replace('?', ''), '/foo', 'request url should be "/foo"');
       equal(window.request.body, '');
       equal(window.request.headers['content-type'], null);
     });
@@ -59,16 +59,16 @@ function submit(form) {
       form.action = '/foo';
 
       if (badFormMethodNormalization) {
-        equal(form.method, 'POST');
+        equal(form.method, 'POST', 'form.method should be "POST"');
       } else {
-        equal(form.method, 'post');
+        equal(form.method, 'post', 'form.method should be "post"');
       }
 
       submit(form);
       return ready();
     }).then(function(window) {
-      equal(window.request.method, 'POST');
-      equal(window.request.url, '/foo');
+      equal(window.request.method, 'POST', 'request method should be "POST"');
+      equal(window.request.url, '/foo', 'request url should be "/foo"');
       equal(window.request.body, '');
       equal(window.request.headers['content-type'], 'application/x-www-form-urlencoded');
     });
@@ -85,16 +85,16 @@ function submit(form) {
       form.action = '/foo';
 
       if (badFormMethodNormalization) {
-        equal(form.method, 'UPDATE');
+        equal(form.method, 'UPDATE', 'form.method should be "UPDATE"');
       } else {
-        equal(form.method, 'get');
+        equal(form.method, 'get', 'form.method should be "get"');
       }
 
       submit(form);
       return ready();
     }).then(function(window) {
-      equal(window.request.method, 'GET');
-      equal(window.request.url.replace('?', ''), '/foo');
+      equal(window.request.method, 'GET', 'request method should be "GET"');
+      equal(window.request.url.replace('?', ''), '/foo', 'request url should be "/foo"');
       equal(window.request.body, '');
       equal(window.request.headers['content-type'], null);
     });
@@ -119,8 +119,8 @@ function submit(form) {
       submit(form);
       return ready();
     }).then(function(window) {
-      equal(window.request.method, 'GET');
-      equal(window.request.url, '/foo?bar=baz');
+      equal(window.request.method, 'GET', 'request method should be "GET"');
+      equal(window.request.url, '/foo?bar=baz', 'request url should be "/foo?bar=baz"');
       equal(window.request.body, '');
     });
   });
@@ -144,8 +144,8 @@ function submit(form) {
       submit(form);
       return ready();
     }).then(function(window) {
-      equal(window.request.method, 'POST');
-      equal(window.request.url, '/foo');
+      equal(window.request.method, 'POST', 'request method should be "POST"');
+      equal(window.request.url, '/foo', 'request url should be "/foo"');
       equal(window.request.body, 'bar=baz');
     });
   });
@@ -196,8 +196,8 @@ function submit(form) {
       submit(form);
       return ready();
     }).then(function(window) {
-      equal(window.request.method, 'GET');
-      equal(window.request.url, '/foo?foo=1&bar=2&select=a&text=foo');
+      equal(window.request.method, 'GET', 'request method should be "GET"');
+      equal(window.request.url, '/foo?foo=1&bar=2&select=a&text=foo', 'request url should be "/foo?foo=1&bar=2&select=a&text=foo"');
       equal(window.request.body, '');
     });
   });
@@ -248,8 +248,8 @@ function submit(form) {
       submit(form);
       return ready();
     }).then(function(window) {
-      equal(window.request.method, 'POST');
-      equal(window.request.url, '/foo');
+      equal(window.request.method, 'POST', 'request method should be "POST"');
+      equal(window.request.url, '/foo', 'request url should be "/foo"');
       equal(window.request.body, 'foo=1&bar=2&select=a&text=foo');
     });
   });
@@ -274,8 +274,8 @@ function submit(form) {
       submit(form);
       return ready();
     }).then(function(window) {
-      equal(window.request.method, 'POST');
-      equal(window.request.url, '/foo');
+      equal(window.request.method, 'POST', 'request method should be "POST"');
+      equal(window.request.url, '/foo', 'request url should be "/foo"');
       var lines = window.request.body.split(/\r\n?/);
       equal(lines[1], 'Content-Disposition: form-data; name="bar"');
       equal(lines[3], 'baz');
@@ -302,8 +302,8 @@ function submit(form) {
       submit(form);
       return ready();
     }).then(function(window) {
-      equal(window.request.method, 'POST');
-      equal(window.request.url, '/foo');
+      equal(window.request.method, 'POST', 'request method should be "POST"');
+      equal(window.request.url, '/foo', 'request url should be "/foo"');
       var lines = window.request.body.split(/\r\n?/);
       equal(lines[1], 'Content-Disposition: form-data; name="bar"; filename=""');
       equal(lines[3], '');
@@ -328,8 +328,8 @@ function submit(form) {
       submit(form);
       return ready();
     }).then(function(window) {
-      equal(window.request.method, 'GET');
-      equal(window.request.url.replace('?', ''), '/foo');
+      equal(window.request.method, 'GET', 'request method should be "GET"');
+      equal(window.request.url.replace('?', ''), '/foo', 'request url should be "/foo"');
     });
   });
 
@@ -350,8 +350,8 @@ function submit(form) {
       submit(form);
       return ready();
     }).then(function(window) {
-      equal(window.request.method, 'GET');
-      equal(window.request.url.replace('?', ''), '/foo');
+      equal(window.request.method, 'GET', 'request method should be "GET"');
+      equal(window.request.url.replace('?', ''), '/foo', 'request url should be "/foo"');
       equal(window.request.body, '');
       equal(window.request.headers['content-type'], null);
     });
@@ -435,8 +435,8 @@ promiseTest('form PUT request', 5, function() {
     submit(form);
     return ready();
   }).then(function(window) {
-    equal(window.request.method, 'PUT');
-    equal(window.request.url, '/foo/1');
+    equal(window.request.method, 'PUT', 'request method should be "PUT"');
+    equal(window.request.url, '/foo/1', 'request url should be "/foo/1"');
     equal(window.request.body, '');
     equal(window.request.headers['content-type'], 'application/x-www-form-urlencoded');
   });
@@ -457,8 +457,8 @@ promiseTest('form DELETE request', 5, function() {
     submit(form);
     return ready();
   }).then(function(window) {
-    equal(window.request.method, 'DELETE');
-    equal(window.request.url, '/foo/1');
+    equal(window.request.method, 'DELETE', 'request method should be "DELETE"');
+    equal(window.request.url, '/foo/1', 'request url should be "/foo/1"');
     equal(window.request.body, '');
     if (xhrDeleteBodyBuggy) {
       ok(true);
@@ -483,8 +483,8 @@ promiseTest('form POST request with default async-accept', 6, function() {
     submit(form);
     return ready();
   }).then(function(window) {
-    equal(window.request.method, 'POST');
-    equal(window.request.url, '/foo');
+    equal(window.request.method, 'POST', 'request method should be "POST"');
+    equal(window.request.url, '/foo', 'request url should be "/foo"');
     equal(window.request.body, '');
     equal(window.request.headers['content-type'], 'application/x-www-form-urlencoded');
     equal(window.request.headers.accept, '*/*');
@@ -507,8 +507,8 @@ promiseTest('form POST request with async-accept', 6, function() {
     submit(form);
     return ready();
   }).then(function(window) {
-    equal(window.request.method, 'POST');
-    equal(window.request.url, '/foo');
+    equal(window.request.method, 'POST', 'request method should be "POST"');
+    equal(window.request.url, '/foo', 'request url should be "/foo"');
     equal(window.request.body, '');
     equal(window.request.headers['content-type'], 'application/x-www-form-urlencoded');
     equal(window.request.headers.accept, 'application/json');
@@ -529,8 +529,8 @@ promiseTest('form asyncSubmit GET request', 5, function() {
 
     return window.handleFormResponse(form.asyncSubmit());
   }).then(function(window) {
-    equal(window.request.method, 'GET');
-    equal(window.request.url.replace('?', ''), '/foo');
+    equal(window.request.method, 'GET', 'request method should be "GET"');
+    equal(window.request.url.replace('?', ''), '/foo', 'request url should be "/foo"');
     equal(window.request.body, '');
     equal(window.request.headers['content-type'], null);
   });
@@ -550,8 +550,8 @@ promiseTest('form asyncSubmit POST request', 5, function() {
 
     return window.handleFormResponse(form.asyncSubmit());
   }).then(function(window) {
-    equal(window.request.method, 'POST');
-    equal(window.request.url, '/foo');
+    equal(window.request.method, 'POST', 'request method should be "POST"');
+    equal(window.request.url, '/foo', 'request url should be "/foo"');
     equal(window.request.body, '');
     equal(window.request.headers['content-type'], 'application/x-www-form-urlencoded');
   });
