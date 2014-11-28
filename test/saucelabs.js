@@ -58,6 +58,7 @@ server.on('listening', function() {
         headers: {},
         auth: process.env.SAUCE_USERNAME + ':' + process.env.SAUCE_ACCESS_KEY
       }, obj).then(function(obj) {
+        console.log(obj);
         if (obj.completed === true) {
           return obj;
         } else {
