@@ -46,10 +46,7 @@ server.on('listening', function() {
     'build': process.env.TRAVIS_BUILD_NUMBER,
     'tags': [process.env.TRAVIS_PULL_REQUEST, process.env.TRAVIS_BRANCH],
     'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER,
-    'platforms': [
-      ['Windows 7', 'firefox', '33'],
-      ['Windows 7', 'googlechrome', '38']
-    ],
+    'platforms': [['Windows 7', 'googlechrome', '38']],
     'url': url,
     'framework': 'qunit'
   }).then(function(obj) {
