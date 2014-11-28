@@ -50,7 +50,10 @@ server.on('listening', function() {
 
   asyncForEach([
     ['Windows 7', 'googlechrome', ''],
-    ['Windows 7', 'firefox', '']
+    // ['Windows 7', 'firefox', ''],
+    ['Windows 7', 'internet explorer', '11'],
+    ['Windows 7', 'internet explorer', '10'],
+    ['Windows 7', 'internet explorer', '9']
   ], 0, function(platform) {
     return fetchJSON({
       method: 'POST',
