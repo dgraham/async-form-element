@@ -21,6 +21,14 @@ function fetchJSON(options, obj) {
   });
 }
 
+function timeout(ms) {
+  return new Promise(function(resolve, reject) {
+    setTimeout(function() {
+      reject(new Error('timeout'));
+    }, ms);
+  });
+}
+
 var exitStatus = 1;
 
 var server = http.createServer(app);
@@ -42,11 +50,7 @@ server.on('listening', function() {
     'url': url,
     'framework': 'qunit'
   }).then(function(obj) {
-    function check(n) {
-      if (!n) {
-        throw 'status timed out';
-      }
-
+    function check() {
       return fetchJSON({
         method: 'POST',
         hostname: 'saucelabs.com',
@@ -57,11 +61,11 @@ server.on('listening', function() {
         if (obj.completed === true) {
           return obj;
         } else {
-          return check(n-1);
+          return check();
         }
       });
     }
-    return check(1000);
+    return Promise.race([check(), timeout(180000)]);
   }).then(function(obj) {
     var test = obj['js tests'][0];
     console.log(test.url);
