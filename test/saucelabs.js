@@ -88,6 +88,7 @@ server.on('listening', function() {
     }).then(function(obj) {
       var test = obj['js tests'][0];
 
+      console.log(test);
       console.log(test.url);
       console.log(test.platform);
       console.log(test.result);
