@@ -83,7 +83,7 @@ server.on('listening', function() {
     });
 
     var passed = tests.every(function(test) {
-      return typeof test.result === 'object' &&
+      return (typeof test.result === 'object') &&
         test.result.passed === test.result.total;
     });
 
