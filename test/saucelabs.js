@@ -74,7 +74,9 @@ server.on('listening', function() {
       exitStatus = 0;
     }
   })['catch'](function(error) {
-    console.error(error);
+    setImmediate(function() {
+      throw error;
+    });
   }).then(function() {
     server.close();
   });
