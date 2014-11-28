@@ -67,6 +67,7 @@ server.on('listening', function() {
     }
     return Promise.race([check(), timeout(180 * 1000)]);
   }).then(function(obj) {
+    console.log(obj);
     var test = obj['js tests'][0];
     console.log(test.url);
     console.log(test.result);
