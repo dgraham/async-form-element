@@ -54,8 +54,7 @@ server.on('listening', function() {
     'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER,
     'platforms': [['Windows 7', 'googlechrome', '38']],
     'url': url,
-    'framework': 'qunit',
-    'sauce-advisor': true
+    'framework': 'qunit'
   }).then(function(obj) {
     function check() {
       return fetchJSON({
