@@ -73,11 +73,20 @@ server.on('listening', function() {
     }
     return Promise.race([check(), timeout(180 * 1000)]);
   }).then(function(obj) {
-    console.log(obj);
-    var test = obj['js tests'][0];
-    console.log(test.url);
-    console.log(test.result);
-    if (test.result.passed) {
+    var tests = obj['js tests'];
+
+    tests.forEach(function(test) {
+      console.log(test.url);
+      console.log(test.platform);
+      console.log(test.result);
+    });
+
+    var passed = tests.every(function(test) {
+      return typeof test.result === 'object' &&
+        test.result.passed === test.result.total;
+    });
+
+    if (passed) {
       exitStatus = 0;
     }
   })['catch'](function(error) {
