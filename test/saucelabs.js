@@ -29,6 +29,12 @@ function timeout(ms) {
   });
 }
 
+function wait(ms) {
+  return new Promise(function(resolve) {
+    setTimeout(resolve, ms);
+  });
+}
+
 var exitStatus = 1;
 
 var server = http.createServer(app);
@@ -62,7 +68,7 @@ server.on('listening', function() {
         if (obj.completed === true) {
           return obj;
         } else {
-          return setTimeout(check, 2 * 1000);
+          return wait(2 * 1000).then(check);
         }
       });
     }
