@@ -69,6 +69,7 @@ server.on('listening', function() {
   }).then(function(obj) {
     var test = obj['js tests'][0];
     console.log(test.url);
+    console.log(test.result);
     if (test.result.passed) {
       exitStatus = 0;
     }
