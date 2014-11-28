@@ -1,6 +1,6 @@
 language: node_js
 before_script: make
-script: make test
+script: make travis
 env:
   global:
   - secure: emehcdaRAMlaJVqf20gDPq5+967VkmqmikQUbucYXJtVZD/wLjiUjfoXwIz94eqBaDPvNBdMOTj3nh76abYV7PdFZeYxUK7Wy1xE+VPjv6kqepl62Mi0h0ONjWfwq6pL2gX4KxHsNkiaN52pbCo8+7/Tiu7gwz7CaLK4/kfGaBQ=
