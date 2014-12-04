@@ -1,3 +1,9 @@
 language: node_js
 before_script: make
-script: make test
+script: make travis
+env:
+  global:
+  - secure: emehcdaRAMlaJVqf20gDPq5+967VkmqmikQUbucYXJtVZD/wLjiUjfoXwIz94eqBaDPvNBdMOTj3nh76abYV7PdFZeYxUK7Wy1xE+VPjv6kqepl62Mi0h0ONjWfwq6pL2gX4KxHsNkiaN52pbCo8+7/Tiu7gwz7CaLK4/kfGaBQ=
+  - secure: U+/hfpb7fF7UlVXNxLHB25aQOtyoijTpKmql5eudDHPyq6hprMbrDhZ4wcv+3Rj3626NgG3LtMTNzgKD1jzjJ6eNXC+FpnuKDleGIb7uEwjbuzHfd58b8YLM38hCoCpe70vGcNVb7on97A93FyASPN+dTrgC74AFXM7P6BxxVCk=
+addons:
+  sauce_connect: true

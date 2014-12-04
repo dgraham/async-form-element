@@ -1,10 +1,15 @@
 build: node_modules/ bower_components/
 
+lint: node_modules/
+	./node_modules/.bin/jshint *.js test/*.js
+
 test: build lint
 	node ./test/run.js
 
-lint: node_modules/
-	./node_modules/.bin/jshint *.js test/*.js
+saucelabs: build lint
+	node ./test/saucelabs.js
+
+travis: test saucelabs
 
 bower_components/: node_modules/
 	./node_modules/.bin/bower install
@@ -15,4 +20,4 @@ node_modules/:
 clean:
 	rm -rf ./bower_components ./node_modules
 
-.PHONY: build test lint clean
+.PHONY: build test travis lint clean
