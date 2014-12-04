@@ -10,6 +10,14 @@ var badFormMethodNormalization = (function() {
 //   https://github.com/ariya/phantomjs/issues/10873
 var xhrDeleteBodyBuggy = navigator.userAgent.match(/PhantomJS/);
 
+// An implementation effect of using XHR as the request, an charset=UTF-8 may
+// be appended to the raw enctype of the form.
+//
+//   https://xhr.spec.whatwg.org/#dom-xmlhttprequest-send-document
+function normalizeContentType(mimeType) {
+  return mimeType.replace('; charset=UTF-8', '');
+}
+
 function submit(form) {
   var event = document.createEvent('Event');
   event.initEvent('submit', true, true);
@@ -70,7 +78,7 @@ function submit(form) {
       equal(window.request.method, 'POST', 'request method should be "POST"');
       equal(window.request.url, '/foo', 'request url should be "/foo"');
       equal(window.request.body, '');
-      equal(window.request.headers['content-type'], 'application/x-www-form-urlencoded');
+      equal(normalizeContentType(window.request.headers['content-type']), 'application/x-www-form-urlencoded');
     });
   });
 
@@ -438,7 +446,7 @@ promiseTest('form PUT request', 5, function() {
     equal(window.request.method, 'PUT', 'request method should be "PUT"');
     equal(window.request.url, '/foo/1', 'request url should be "/foo/1"');
     equal(window.request.body, '');
-    equal(window.request.headers['content-type'], 'application/x-www-form-urlencoded');
+    equal(normalizeContentType(window.request.headers['content-type']), 'application/x-www-form-urlencoded');
   });
 });
 
@@ -463,7 +471,7 @@ promiseTest('form DELETE request', 5, function() {
     if (xhrDeleteBodyBuggy) {
       ok(true);
     } else {
-      equal(window.request.headers['content-type'], 'application/x-www-form-urlencoded');
+      equal(normalizeContentType(window.request.headers['content-type']), 'application/x-www-form-urlencoded');
     }
   });
 });
@@ -486,7 +494,7 @@ promiseTest('form POST request with default async-accept', 6, function() {
     equal(window.request.method, 'POST', 'request method should be "POST"');
     equal(window.request.url, '/foo', 'request url should be "/foo"');
     equal(window.request.body, '');
-    equal(window.request.headers['content-type'], 'application/x-www-form-urlencoded');
+    equal(normalizeContentType(window.request.headers['content-type']), 'application/x-www-form-urlencoded');
     equal(window.request.headers.accept, '*/*');
   });
 });
@@ -510,7 +518,7 @@ promiseTest('form POST request with async-accept', 6, function() {
     equal(window.request.method, 'POST', 'request method should be "POST"');
     equal(window.request.url, '/foo', 'request url should be "/foo"');
     equal(window.request.body, '');
-    equal(window.request.headers['content-type'], 'application/x-www-form-urlencoded');
+    equal(normalizeContentType(window.request.headers['content-type']), 'application/x-www-form-urlencoded');
     equal(window.request.headers.accept, 'application/json');
   });
 });
@@ -553,7 +561,7 @@ promiseTest('form asyncSubmit POST request', 5, function() {
     equal(window.request.method, 'POST', 'request method should be "POST"');
     equal(window.request.url, '/foo', 'request url should be "/foo"');
     equal(window.request.body, '');
-    equal(window.request.headers['content-type'], 'application/x-www-form-urlencoded');
+    equal(normalizeContentType(window.request.headers['content-type']), 'application/x-www-form-urlencoded');
   });
 });
 
