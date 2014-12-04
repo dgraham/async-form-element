@@ -49,8 +49,8 @@ server.on('listening', function() {
   var url  = 'http://localhost:'+port+'/test/test.html';
 
   asyncForEach([
-    ['Windows 7', 'googlechrome', '']
-    // ['Windows 7', 'firefox', ''],
+    ['Windows 7', 'googlechrome', ''],
+    ['Windows 7', 'firefox', '']
     // ['Windows 7', 'internet explorer', '11'],
     // ['Windows 7', 'internet explorer', '10'],
     // ['Windows 7', 'internet explorer', '9']
