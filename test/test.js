@@ -623,3 +623,130 @@ promiseTest('form submission with prevent default and propagation stopped', 2, f
     return nextSubmit;
   });
 });
+
+promiseTest('successful async form post dispatches progress events', 4, function() {
+  var ready = QUnit.createFrame();
+
+  return ready().then(function(window) {
+    var form = window.document.getElementById('async-form');
+    window.CustomElements.upgrade(form);
+
+    form.method = 'POST';
+    form.action = '/foo';
+
+    form.addEventListener('loadstart', function(event) {
+      event.stopPropagation();
+      ok(true, 'Received loadstart event');
+    });
+
+    form.addEventListener('load', function(event) {
+      event.stopPropagation();
+      ok(true, 'Received load event');
+    });
+
+    form.addEventListener('loadend', function(event) {
+      event.stopPropagation();
+      ok(true, 'Received loadend event');
+    });
+
+    submit(form);
+    return ready();
+  }).then(function() {
+    ok(true);
+  }, function(error) {
+    ok(false, error);
+  });
+});
+
+promiseTest('canceled async form post dispatches progress events', 4, function() {
+  var ready = QUnit.createFrame();
+
+  return ready().then(function(window) {
+    var form = window.document.getElementById('async-form');
+    window.CustomElements.upgrade(form);
+
+    form.method = 'POST';
+    form.action = '/foo';
+
+    form.addEventListener('loadstart', function(event) {
+      event.stopPropagation();
+      event.preventDefault();
+      ok(true, 'Received loadstart event');
+    });
+
+    form.addEventListener('abort', function(event) {
+      event.stopPropagation();
+      ok(true, 'Received abort event');
+    });
+
+    form.addEventListener('loadend', function(event) {
+      event.stopPropagation();
+      ok(true, 'Received loadend event');
+    });
+
+    submit(form);
+    return ready();
+  }).then(function() {
+    ok(false);
+  }, function(error) {
+    ok(error);
+  });
+});
+
+promiseTest('failing async form post triggers progress events', 3, function() {
+  var ready = QUnit.createFrame();
+
+  return ready().then(function(window) {
+    var form = window.document.getElementById('async-form');
+    window.CustomElements.upgrade(form);
+
+    form.method = 'POST';
+    form.action = '/boom';
+
+    form.addEventListener('error', function(event) {
+      event.stopPropagation();
+      ok(true, 'Received error event');
+    });
+
+    form.addEventListener('loadend', function(event) {
+      event.stopPropagation();
+      ok(true, 'Received loadend event');
+    });
+
+    submit(form);
+    return ready();
+  }).then(function() {
+    ok(false);
+  }, function(error) {
+    ok(error);
+  });
+});
+
+promiseTest('network error on async form post triggers progress events', 3, function() {
+  var ready = QUnit.createFrame();
+
+  return ready().then(function(window) {
+    var form = window.document.getElementById('async-form');
+    window.CustomElements.upgrade(form);
+
+    form.method = 'POST';
+    form.action = '/error';
+
+    form.addEventListener('error', function(event) {
+      event.stopPropagation();
+      ok(true, 'Received error event');
+    });
+
+    form.addEventListener('loadend', function(event) {
+      event.stopPropagation();
+      ok(true, 'Received loadend event');
+    });
+
+    submit(form);
+    return ready();
+  }).then(function() {
+    ok(false);
+  }, function(error) {
+    ok(error);
+  });
+});
