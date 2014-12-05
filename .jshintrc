@@ -15,5 +15,6 @@
   "boss": true,
   "eqnull": true,
   "esnext": true,
+  "evil": true,
   "browser": true
 }

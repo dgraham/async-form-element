@@ -565,7 +565,7 @@ promiseTest('form asyncSubmit POST request', 5, function() {
   });
 });
 
-promiseTest('form submission with prevent default', 2, function() {
+promiseTest('form asyncsubmit with prevent default', 2, function() {
   var ready = QUnit.createFrame();
 
   return ready().then(function(window) {
@@ -576,13 +576,13 @@ promiseTest('form submission with prevent default', 2, function() {
     form.action = '/foo';
 
     var nextSubmit = new Promise(function(resolve) {
-      form.addEventListener('submit', function(event) {
+      form.addEventListener('asyncsubmit', function(event) {
         event.submission.then(function() {
-          ok(false);
+          ok(false, 'submission should not be resolved');
           resolve();
         }, function(error) {
-          ok(error);
-          equal(error.message, 'submit default action canceled');
+          ok(error, 'submission shoud be rejected');
+          equal(error.message, 'asyncsubmit default action canceled');
           resolve();
         });
         event.preventDefault();
@@ -594,7 +594,7 @@ promiseTest('form submission with prevent default', 2, function() {
   });
 });
 
-promiseTest('form submission with prevent default and propagation stopped', 2, function() {
+promiseTest('form asyncsubmit with prevent default and propagation stopped', 2, function() {
   var ready = QUnit.createFrame();
 
   return ready().then(function(window) {
@@ -605,13 +605,13 @@ promiseTest('form submission with prevent default and propagation stopped', 2, f
     form.action = '/foo';
 
     var nextSubmit = new Promise(function(resolve) {
-      form.addEventListener('submit', function(event) {
+      form.addEventListener('asyncsubmit', function(event) {
         event.submission.then(function() {
-          ok(false);
+          ok(false, 'submission should not be resolved');
           resolve();
         }, function(error) {
-          ok(error);
-          equal(error.message, 'submit default action canceled');
+          ok(error, 'submission shoud be rejected');
+          equal(error.message, 'asyncsubmit default action canceled');
           resolve();
         });
         event.preventDefault();
