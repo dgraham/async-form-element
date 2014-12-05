@@ -3,7 +3,7 @@ before_script: make
 script: make travis
 env:
   global:
-  - secure: emehcdaRAMlaJVqf20gDPq5+967VkmqmikQUbucYXJtVZD/wLjiUjfoXwIz94eqBaDPvNBdMOTj3nh76abYV7PdFZeYxUK7Wy1xE+VPjv6kqepl62Mi0h0ONjWfwq6pL2gX4KxHsNkiaN52pbCo8+7/Tiu7gwz7CaLK4/kfGaBQ=
-  - secure: U+/hfpb7fF7UlVXNxLHB25aQOtyoijTpKmql5eudDHPyq6hprMbrDhZ4wcv+3Rj3626NgG3LtMTNzgKD1jzjJ6eNXC+FpnuKDleGIb7uEwjbuzHfd58b8YLM38hCoCpe70vGcNVb7on97A93FyASPN+dTrgC74AFXM7P6BxxVCk=
+    - SAUCE_USERNAME=josh-async-form
+    - SAUCE_ACCESS_KEY=3930526b-81b3-4d50-9ca9-0fa31edbc1aa
 addons:
   sauce_connect: true
