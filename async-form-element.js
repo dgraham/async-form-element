@@ -33,8 +33,14 @@
   });
 
   function fire(type, target, response) {
-    var event = document.createEvent('ProgressEvent');
-    event.initEvent(type, true, true);
+    var event;
+    if ('ProgressEvent' in window) {
+      event = new ProgressEvent(type, {bubbles: true, cancelable: true})
+    } else {
+      event = target.ownerDocument.createEvent('ProgressEvent');
+      event.initEvent(type, true, true);
+    }
+
     if (response) {
       event.response = response;
     }
