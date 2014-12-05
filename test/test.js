@@ -582,7 +582,7 @@ promiseTest('form asyncsubmit skipped if submit prevent default', 1, function() 
         setTimeout(resolve, 500);
       });
 
-      form.addEventListener('asyncsubmit', function(event) {
+      form.addEventListener('asyncsubmit', function() {
         ok(false, 'asyncsubmit should not be dispatched');
       });
     });
