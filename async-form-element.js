@@ -32,6 +32,20 @@
     }
   });
 
+  var onasyncsubmitProps = new WeakMap();
+
+  Object.defineProperty(AsyncFormElementPrototype, 'onasyncsubmit', {
+    get: function() {
+      return onasyncsubmitProps.get(this);
+    },
+    set: function(value) {
+      var oldValue = onasyncsubmitProps.get(this);
+      this.removeEventListener('asyncsubmit', oldValue, false);
+      this.addEventListener('asyncsubmit', value, false);
+      return value;
+    }
+  });
+
   function makeDeferred() {
     var resolve, reject;
     var promise = new Promise(function(_resolve, _reject) {
@@ -48,43 +62,69 @@
     Promise.resolve().then(fn);
   }
 
-  function resolveDispatch(event) {
-    if (event.defaultPrevented) {
-      event.dispatched.reject(new Error('submit default action canceled'));
-    } else {
-      event.dispatched.resolve();
+  var submitEventDefaultPrevented = new WeakMap();
+  var submitEventDispatched = new WeakMap();
+
+  function resolveSubmitDispatch(event) {
+    if (AsyncFormElementPrototype.isPrototypeOf(event.target)) {
+      var dispatched = submitEventDispatched.get(event);
+      if (submitEventDefaultPrevented.get(event)) {
+        dispatched.reject(new Error('submit default action canceled'));
+      } else {
+        dispatched.resolve();
+      }
     }
   }
 
   function captureAsyncFormSubmit(event) {
     if (AsyncFormElementPrototype.isPrototypeOf(event.target)) {
-      event.dispatched = makeDeferred();
+      var target = event.target;
+
+      // Always disable default form submit
+      event.preventDefault();
+
+      event.preventDefault = function() {
+        submitEventDefaultPrevented.set(event, true);
+      };
+
+      var dispatched = makeDeferred();
+      submitEventDispatched.set(event, dispatched);
+
       nextTick(function() {
-        resolveDispatch(event);
+        resolveSubmitDispatch(event);
       });
 
-      event.submission = makeDeferred();
+      window.removeEventListener('submit', resolveSubmitDispatch, false);
+      window.addEventListener('submit', resolveSubmitDispatch, false);
 
-      window.removeEventListener('submit', handleAsyncFormSubmit, false);
-      window.addEventListener('submit', handleAsyncFormSubmit, false);
+      dispatched.then(function() {
+        var asyncevent = document.createEvent('Event');
+        asyncevent.initEvent('asyncsubmit', true, true);
+        var submission = asyncevent.submission = makeDeferred();
+        target.dispatchEvent(asyncevent);
 
-      event.dispatched.then(function() {
-        return event.target.request();
-      }).then(event.submission.resolve, event.submission.reject);
+        if (asyncevent.defaultPrevented) {
+          submission.reject(new Error('asyncsubmit default action canceled'));
+        } else {
+          target.request().then(submission.resolve, submission.reject);
+        }
+      });
     }
-  }
-
-  function handleAsyncFormSubmit(event) {
-    resolveDispatch(event);
-
-    // Always disable default form submit
-    event.preventDefault();
   }
 
   window.addEventListener('submit', captureAsyncFormSubmit, true);
 
-
   AsyncFormElementPrototype.createdCallback = function() {
+    var value = this.getAttribute('onasyncsubmit');
+    if (value) {
+      this.attributeChanged('onasyncsubmit', null, value);
+    }
+  };
+
+  AsyncFormElementPrototype.attributeChanged = function(attrName, oldValue, newValue) {
+    if (attrName === 'onasyncsubmit') {
+      this.onasyncsubmit = new Function('event', newValue);
+    }
   };
 
   AsyncFormElementPrototype.asyncSubmit = function() {
