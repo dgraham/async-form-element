@@ -32,6 +32,16 @@
     }
   });
 
+  function fire(type, target, response) {
+    var event = document.createEvent('ProgressEvent');
+    event.initEvent(type, true, true);
+    if (response) {
+      event.response = response;
+    }
+    target.dispatchEvent(event);
+    return event;
+  }
+
   function makeDeferred() {
     var resolve, reject;
     var promise = new Promise(function(_resolve, _reject) {
@@ -116,6 +126,14 @@
     return new Promise(function(resolve, reject) {
       var req = new XMLHttpRequest();
 
+      var event = fire('loadstart', form);
+      if (event.defaultPrevented) {
+        reject(new Error('Form submit canceled'));
+        fire('abort', form);
+        fire('loadend', form);
+        return;
+      }
+
       var method = form.asyncMethod;
       var url = form.action;
       if (method === 'get') {
@@ -137,19 +155,50 @@
       }
 
       req.onload = function() {
+        var response = new Response(req);
         if (req.status === 200) {
           resolve(req.response);
+          resolve(response);
+          fire('load', form, response);
+          fire('loadend', form, response);
         } else {
-          reject(new Error(req.statusText));
+          var error = new Error(req.statusText);
+          error.response = response;
+          reject(error);
+          fire('error', form, response);
+          fire('loadend', form, response);
         }
       };
 
       req.onerror = function() {
         reject(new Error('Network Error'));
+        fire('error', form);
+        fire('loadend', form);
       };
 
       req.send(body);
     });
+  };
+
+  var Response = function(xhr) {
+    this.status = xhr.status;
+    this.statusText = xhr.statusText;
+    this._body = xhr.responseText;
+  };
+
+  Response.prototype.json = function() {
+    var body = this._body;
+    return new Promise(function(resolve, reject) {
+      try {
+        resolve(JSON.parse(body));
+      } catch (ex) {
+        reject(ex);
+      }
+    });
+  };
+
+  Response.prototype.text = function() {
+    return Promise.resolve(this._body);
   };
 
   window.AsyncFormElement = document.registerElement('async-form', {
